@@ -19,15 +19,18 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
        sliderInput("alpha",
-                   "Principal's alpha (exponential factor in widget utility):",
+                   "Principal's alpha (in utility):",
                    min = 0,
                    max = 1.0,
                    value = 0.1),
        sliderInput("theta",
-                   "Agent's theta (wage per widget):",
+                   "Agent's theta (pay per widget):",
                    min = 0,
                    max = 1.0,
-                   value = 0.1)
+                   value = 0.1),
+       helpText("This plots the principal's net utility:"),
+       withMathJax(),
+       helpText("$$\\frac{1-e^{{-\\alpha}{q}}}{\\alpha} - {\\theta}{q}$$")
     ),
     
     # Show a plot of the generated distribution
