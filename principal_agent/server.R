@@ -12,16 +12,6 @@ library(ggplot2)
 library(reshape2)
 library(shiny)
 
-# DEPRECATED.
-# Treat q as a column vector of quantities, then calculate a column vector
-# of transfer and utility.
-calculateUtility <- function(q, alpha, theta) {
-  df <- data.frame(q, sapply(q, function(x) theta * x))
-  names(df) <- c('quantity','transfer')
-  df['utility'] <- (1-exp(-alpha*df$q))/alpha - df$transfer
-  df
-}
-
 # The raw utility of q widgets for a principal with an exponential utility
 # and alpha preference.
 expUtility <- function(alpha, q) {
