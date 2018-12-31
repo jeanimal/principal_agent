@@ -13,6 +13,12 @@ shinyUI(fluidPage(
   
   # Application title
   titlePanel("Principal's utility by quantity"),
+  helpText("Lesson: The efficient agent (lower theta, less effort ",
+           "per widget, by default agent1) gets a contract to produce ",
+           "more widgets for a lower payment than the inefficient agent ",
+           "(by default agent2)."),
+  helpText("(This is in a one-shot game where the principal proposes a contract",
+           "and the agent can take it or leave it.)"),
   
   # Sidebar with a slider input for number of bins 
   sidebarLayout(
@@ -24,13 +30,13 @@ shinyUI(fluidPage(
                    step = 0.1,
                    value = 0.1),
        numericInput("theta1",
-                   "Agent 1 theta (pay per widget):",
+                   "Agent 1 theta (effort per widget):",
                    min = 0,
                    max = 1.0,
                    step = 0.1,
                    value = 0.1),
        numericInput("theta2",
-                    "Agent 2 theta (pay per widget):",
+                    "Agent 2 theta (effort per widget):",
                     min = 0,
                     max = 1.0,
                     step = 0.1,
