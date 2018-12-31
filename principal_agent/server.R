@@ -22,11 +22,15 @@ calculateUtility <- function(q, alpha, theta) {
   df
 }
 
+expUtility <- function(alpha, q) {
+  (1-exp(-alpha*q))/alpha
+}
+
 # Use qVec as quantities, then calculate a column vector
 # of raw utility. Then for each theta in the thetaList, generate a transfer
 # and net utility column.
 calcMultipleUtility <- function(qVec, alpha, thetaVec) {
-  df <- data.frame(qVec, sapply(qVec, function(x) (1-exp(-alpha*x))/alpha))
+  df <- data.frame(qVec, sapply(qVec, function(x) expUtility(alpha, x)))
   names(df) <- c('quantity','utility')
   for (i in seq(length(thetaVec))) {
     df[paste0('transfer', i)] <- thetaVec[i] * df['quantity']
@@ -42,7 +46,8 @@ shinyServer(function(input, output) {
     dfLong <- melt(dfWide, id=c("quantity"),
                    measure=c("utility", "net_utility_with_agent1", "net_utility_with_agent2"))
     colnames(dfLong) <-c("quantity", "type", "utility")
-    ggplot(dfLong, aes(x=quantity, y=utility, colour=type)) + geom_path()
+    p <- ggplot(dfLong, aes(x=quantity, y=utility, colour=type)) + geom_path()
+    # p + geom_point(aes(x=5.6, y=3.9), colour="green") + geom_point(aes(x=5.6, y=3.9), colour="blue")
+    p
   })
-  
 })
