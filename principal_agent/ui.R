@@ -9,10 +9,10 @@
 library(shiny)
 
 # Define UI for principal-agent application.
-shinyUI(fluidPage(
-  
-  # Application title
-  titlePanel("Principal's utility by quantity"),
+shinyUI(
+  navbarPage("Principal-Agent",
+             tabPanel("Full Info",
+                      fluidPage(
   helpText("Lesson: The efficient agent (lower theta, less effort ",
            "per widget, by default agent1) gets a contract to produce ",
            "more widgets for a lower payment than the inefficient agent ",
@@ -58,4 +58,7 @@ shinyUI(fluidPage(
   tags$a(href="https://github.com/jeanimal/principal_agent",
          "https://github.com/jeanimal/principal_agent")
   
+)),
+tabPanel("Incomplete Info",
+         fluidPage(helpText("Coming soon...")))
 ))
