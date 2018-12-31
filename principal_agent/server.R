@@ -21,14 +21,14 @@ calculateUtility <- function(q, alpha, theta) {
   df
 }
 
-# Treat q as a column vector of quantities, then calculate a column vector
+# Use qVec as quantities, then calculate a column vector
 # of raw utility. Then for each theta in the thetaList, generate a transfer
 # and net utility column.
-calcMultipleUtility <- function(q, alpha, thetaList) {
-  df <- data.frame(q, sapply(q, function(x) (1-exp(-alpha*x))/alpha))
+calcMultipleUtility <- function(qVec, alpha, thetaVec) {
+  df <- data.frame(qVec, sapply(qVec, function(x) (1-exp(-alpha*x))/alpha))
   names(df) <- c('quantity','utility')
-  for (i in seq(length(thetaList))) {
-    df[paste0('transfer', i)] <- thetaList[i] * df['quantity']
+  for (i in seq(length(thetaVec))) {
+    df[paste0('transfer', i)] <- thetaVec[i] * df['quantity']
     df[paste0('utility', i)] <- df['utility'] - df[paste0('transfer', i)]
   }
   df
@@ -37,7 +37,7 @@ calcMultipleUtility <- function(q, alpha, thetaList) {
 shinyServer(function(input, output) {
   output$utilityPlot <- renderPlot({
     q <- seq(1, 30, by=1)
-    df <- calcMultipleUtility(q, input$alpha, c(input$theta))
+    df <- calcMultipleUtility(q, input$alpha, c(input$theta1, input$theta2))
     ggplot(df, aes(quantity, utility1)) + geom_path()
   })
   
