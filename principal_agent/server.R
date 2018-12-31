@@ -19,6 +19,13 @@ expUtility <- function(alpha, q) {
 }
 
 # Solves the optimal quantity under full information.
+# Derivative of utility with respect to q: alpha * exp(-alpha * q) / alpha
+# Derivative of cost with respect to q: theta
+# Set these equal and solve for q.
+# exp(-alpha * q) = theta
+# -alpha * q = log(theta)
+# q = - log(theta) / alpha
+# Note that in R, "log" is the natural log.
 solveQ <- function(alpha, theta) {
   -log(theta) / alpha
 }
