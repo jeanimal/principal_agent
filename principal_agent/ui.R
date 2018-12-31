@@ -1,6 +1,5 @@
 #
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
+# This is the user-interface definition of a Shiny web application.
 #
 # Find out more about building applications with Shiny here:
 # 
@@ -9,7 +8,7 @@
 
 library(shiny)
 
-# Define UI for application that draws a histogram
+# Define UI for principal-agent application.
 shinyUI(fluidPage(
   
   # Application title
