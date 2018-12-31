@@ -18,15 +18,17 @@ shinyUI(fluidPage(
   # Sidebar with a slider input for number of bins 
   sidebarLayout(
     sidebarPanel(
-       sliderInput("alpha",
+       numericInput("alpha",
                    "Principal's alpha (in utility):",
                    min = 0,
                    max = 1.0,
+                   step = 0.1,
                    value = 0.1),
-       sliderInput("theta",
+       numericInput("theta",
                    "Agent's theta (pay per widget):",
                    min = 0,
                    max = 1.0,
+                   step = 0.1,
                    value = 0.1),
        helpText("This plots the principal's net utility:"),
        withMathJax(),
