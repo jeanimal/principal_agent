@@ -22,9 +22,9 @@ calculateUtility <- function(q, alpha, theta) {
 
 shinyServer(function(input, output) {
   output$utilityPlot <- renderPlot({
-    q <- seq(1, 30, by=0.5)
+    q <- seq(1, 30, by=1)
     df <- calculateUtility(q, input$alpha, input$theta)
-    ggplot(df, aes(quantity, utility)) + geom_line()
+    ggplot(df, aes(quantity, utility)) + geom_path()
   })
   
 })

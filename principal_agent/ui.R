@@ -19,14 +19,14 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
        sliderInput("alpha",
-                   "Principal's alpha:",
+                   "Principal's alpha (exponential factor in widget utility):",
                    min = 0,
-                   max = 0.5,
+                   max = 1.0,
                    value = 0.1),
        sliderInput("theta",
-                   "Agent's theta:",
+                   "Agent's theta (wage per widget):",
                    min = 0,
-                   max = 0.5,
+                   max = 1.0,
                    value = 0.1)
     ),
     
@@ -34,5 +34,10 @@ shinyUI(fluidPage(
     mainPanel(
        plotOutput("utilityPlot")
     )
-  )
+  ),
+  hr(),
+  print("Source code: "),
+  tags$a(href="https://github.com/jeanimal/principal_agent",
+         "https://github.com/jeanimal/principal_agent")
+  
 ))
