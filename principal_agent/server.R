@@ -7,20 +7,24 @@
 #    http://shiny.rstudio.com/
 #
 
+library(ggplot2)
+#library(Cairo)   # For nicer ggplot2 output when deployed on Linux
 library(shiny)
 
-# Define server logic required to draw a histogram
+# Treat q as a column vector of quantities, then calculate a column vector
+# of transfer and utility.
+calculateUtility <- function(q, alpha, theta) {
+  df <- data.frame(q, sapply(q, function(x) theta * x))
+  names(df) <- c('quantity','transfer')
+  df['utility'] <- (1-exp(-alpha*df$q))/alpha - df$transfer
+  df
+}
+
 shinyServer(function(input, output) {
-   
-  output$distPlot <- renderPlot({
-    
-    # generate bins based on input$bins from ui.R
-    x    <- faithful[, 2] 
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-    
-    # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = 'darkgray', border = 'white')
-    
+  output$utilityPlot <- renderPlot({
+    q <- seq(1, 30, by=0.5)
+    df <- calculateUtility(q, input$alpha, input$theta)
+    ggplot(df, aes(quantity, utility)) + geom_line()
   })
   
 })

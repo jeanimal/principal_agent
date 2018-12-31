@@ -1,0 +1,12 @@
+name: principal_agent
+title: principal_agent
+username:
+account: jeanimal
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 624927
+bundleId: 1790306
+url: https://jeanimal.shinyapps.io/principal_agent/
+when: 1546228158.52649
+asMultiple: FALSE
+asStatic: FALSE
