@@ -30,7 +30,7 @@ calcMultipleUtility <- function(qVec, alpha, thetaVec) {
   names(df) <- c('quantity','utility')
   for (i in seq(length(thetaVec))) {
     df[paste0('transfer', i)] <- thetaVec[i] * df['quantity']
-    df[paste0('utility', i)] <- df['utility'] - df[paste0('transfer', i)]
+    df[paste0('net_utility_with_agent', i)] <- df['utility'] - df[paste0('transfer', i)]
   }
   df
 }
@@ -39,7 +39,8 @@ shinyServer(function(input, output) {
   output$utilityPlot <- renderPlot({
     q <- seq(1, 30, by=1)
     dfWide <- calcMultipleUtility(q, input$alpha, c(input$theta1, input$theta2))
-    dfLong <- melt(dfWide, id=c("quantity"), measure=c("utility", "utility1", "utility2"))
+    dfLong <- melt(dfWide, id=c("quantity"),
+                   measure=c("utility", "net_utility_with_agent1", "net_utility_with_agent2"))
     colnames(dfLong) <-c("quantity", "type", "utility")
     ggplot(dfLong, aes(x=quantity, y=utility, colour=type)) + geom_path()
   })
