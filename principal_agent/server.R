@@ -65,5 +65,5 @@ shinyServer(function(input, output) {
     q <- seq(0, 30, by=1)
     createUtilityPlot(q, input$alpha, input$theta1, input$theta2)
   })
-  output$table <- renderTable(iris)
+  # output$table <- renderTable(iris)
 })
