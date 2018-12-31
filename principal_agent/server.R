@@ -43,20 +43,27 @@ calcMultipleUtility <- function(qVec, alpha, thetaVec) {
   df
 }
 
+# Example: createUtilityPlot(seq(0, 30, by=1), 0.1, 0.1, 0.2)
+createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
+  q <- seq(0, 30, by=1)
+  dfWide <- calcMultipleUtility(q, alpha, c(theta1, theta2))
+  dfLong <- melt(dfWide, id=c("quantity"),
+                 measure=c("utility", "net_utility_with_agent1", "net_utility_with_agent2"))
+  colnames(dfLong) <-c("quantity", "type", "utility")
+  p <- ggplot(dfLong, aes(x=quantity, y=utility, colour=type)) + geom_path()
+  q1 <- solveQ(alpha, theta1)
+  u1 <- expUtility(alpha, q1) - q1 * theta1
+  p <- p + geom_label(label="max", aes(x=q1, y=u1), colour="green")
+  q2 <- solveQ(alpha, theta2)
+  u2 <- expUtility(alpha, q2) - q2 * theta2
+  p <- p + geom_label(label="max", aes(x=q2, y=u2), colour="blue")
+  p
+}
+
 shinyServer(function(input, output) {
   output$utilityPlot <- renderPlot({
     q <- seq(0, 30, by=1)
-    dfWide <- calcMultipleUtility(q, input$alpha, c(input$theta1, input$theta2))
-    dfLong <- melt(dfWide, id=c("quantity"),
-                   measure=c("utility", "net_utility_with_agent1", "net_utility_with_agent2"))
-    colnames(dfLong) <-c("quantity", "type", "utility")
-    p <- ggplot(dfLong, aes(x=quantity, y=utility, colour=type)) + geom_path()
-    q1 <- solveQ(input$alpha, input$theta1)
-    u1 <- expUtility(input$alpha, q1) - q1 * input$theta1
-    p <- p + geom_label(label="max", aes(x=q1, y=u1), colour="green")
-    q2 <- solveQ(input$alpha, input$theta2)
-    u2 <- expUtility(input$alpha, q2) - q2 * input$theta2
-    p <- p + geom_label(label="max", aes(x=q2, y=u2), colour="blue")
-    p
+    createUtilityPlot(q, input$alpha, input$theta1, input$theta2)
   })
+  output$table <- renderTable(iris)
 })
