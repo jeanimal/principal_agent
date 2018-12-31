@@ -18,8 +18,8 @@ shinyUI(fluidPage(
            "more widgets for a lower payment than the inefficient agent ",
            "(by default agent2)."),
   helpText("(This is in a one-shot game where the principal proposes a contract",
-           "and the agent can take it or leave it.  The principal knows the "
-           "agent's theta before proposing the contract.")"),
+           "and the agent can take it or leave it.  The principal knows the ",
+           "agent's theta before proposing the contract.)"),
   
   # Sidebar with a slider input for number of bins 
   sidebarLayout(
