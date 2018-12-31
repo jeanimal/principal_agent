@@ -52,13 +52,14 @@ shinyUI(
        plotOutput("utilityPlot"),
        tableOutput('solutionTable')
     )
-  ),
+  )
+)),
+tabPanel("Incomplete Info",
+         fluidPage(helpText("Coming soon..."))),
+footer = fluidPage(
   hr(),
   print("Source code: "),
   tags$a(href="https://github.com/jeanimal/principal_agent",
          "https://github.com/jeanimal/principal_agent")
-  
-)),
-tabPanel("Incomplete Info",
-         fluidPage(helpText("Coming soon...")))
+)
 ))
