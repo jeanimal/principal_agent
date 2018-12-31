@@ -47,7 +47,6 @@ shinyUI(
        helpText("$$\\frac{1-e^{{-\\alpha}{q}}}{\\alpha} - {\\theta}{q}$$")
     ),
     
-    # Show a plot of the generated distribution
     mainPanel(
        plotOutput("utilityPlot"),
        tableOutput('solutionTable')
@@ -55,10 +54,13 @@ shinyUI(
   )
 )),
 tabPanel("Incomplete Info",
-         fluidPage(helpText("Coming soon..."))),
+         fluidPage(
+           helpText("The principal does not know each agent's type ",
+                    "but does know the proportion of agents of each type."),
+           helpText("Coming soon...")
+)),
 footer = fluidPage(
   hr(),
-  print("Source code: "),
   tags$a(href="https://github.com/jeanimal/principal_agent",
          "https://github.com/jeanimal/principal_agent")
 )
