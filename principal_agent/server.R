@@ -9,6 +9,7 @@
 
 library(ggplot2)
 #library(Cairo)   # For nicer ggplot2 output when deployed on Linux
+library(reshape2)
 library(shiny)
 
 # DEPRECATED.
@@ -37,8 +38,9 @@ calcMultipleUtility <- function(qVec, alpha, thetaVec) {
 shinyServer(function(input, output) {
   output$utilityPlot <- renderPlot({
     q <- seq(1, 30, by=1)
-    df <- calcMultipleUtility(q, input$alpha, c(input$theta1, input$theta2))
-    ggplot(df, aes(quantity, utility1)) + geom_path()
+    dfWide <- calcMultipleUtility(q, input$alpha, c(input$theta1, input$theta2))
+    dfLong <- melt(dfWide, id=c("quantity"), measure=c("utility", "utility1", "utility2"))
+    ggplot(dfLong, aes(x=quantity, y=value, colour=variable)) + geom_path()
   })
   
 })
