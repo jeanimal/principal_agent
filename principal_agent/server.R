@@ -45,7 +45,7 @@ calcMultipleUtility <- function(qVec, alpha, thetaVec) {
 
 shinyServer(function(input, output) {
   output$utilityPlot <- renderPlot({
-    q <- seq(1, 30, by=1)
+    q <- seq(0, 30, by=1)
     dfWide <- calcMultipleUtility(q, input$alpha, c(input$theta1, input$theta2))
     dfLong <- melt(dfWide, id=c("quantity"),
                    measure=c("utility", "net_utility_with_agent1", "net_utility_with_agent2"))
