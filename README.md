@@ -2,8 +2,11 @@
 
 Uses Shiny (written in R) to make simple apps to let users experiment with simple economic principal-agent models.
 
-The Shiny app is deployed at
+I manually deploy the Shiny app to:
 https://jeanimal.shinyapps.io/principal_agent/
+(So the repo can get out of sync with the deployed app.)
+
+# Tools
 
 The app was created with RStudio, so just load the .Rproj file for easy development and running locally.
 
