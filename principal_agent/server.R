@@ -47,6 +47,8 @@ calcMultipleUtility <- function(qVec, alpha, thetaVec) {
 createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
   q <- seq(0, 30, by=1)
   dfWide <- calcMultipleUtility(q, alpha, c(theta1, theta2))
+  # colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent1")] <- "net_utility_with_efficient_agent"
+  # colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent2")] <- "net_utility_with_inefficient_agent"
   dfLong <- melt(dfWide, id=c("quantity"),
                  measure=c("utility", "net_utility_with_agent1", "net_utility_with_agent2"))
   colnames(dfLong) <-c("quantity", "type", "utility")
