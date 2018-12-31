@@ -61,10 +61,22 @@ createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
   p
 }
 
+createSolutionDataFrame <- function(alpha, theta1, theta2) {
+  q1 <- solveQ(alpha, theta1)
+  u1 <- expUtility(alpha, q1) - q1 * theta1
+  q2 <- solveQ(alpha, theta2)
+  u2 <- expUtility(alpha, q2) - q2 * theta2
+  data.frame(agent=c("agent1", "agent2"), theta=c(theta1, theta2),
+             quantity=c(q1, q2),
+             payment=c(q1*theta1, q2*theta2), principalUtility=c(u1, u2))
+}
+
 shinyServer(function(input, output) {
   output$utilityPlot <- renderPlot({
     q <- seq(0, 30, by=1)
     createUtilityPlot(q, input$alpha, input$theta1, input$theta2)
   })
-  # output$table <- renderTable(iris)
+  output$solutionTable <- renderTable({
+    createSolutionDataFrame(input$alpha, input$theta1, input$theta2)
+  })
 })
