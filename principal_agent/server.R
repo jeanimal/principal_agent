@@ -22,8 +22,15 @@ calculateUtility <- function(q, alpha, theta) {
   df
 }
 
+# The raw utility of q widgets for a principal with an exponential utility
+# and alpha preference.
 expUtility <- function(alpha, q) {
   (1-exp(-alpha*q))/alpha
+}
+
+# Solves the optimal quantity under full information.
+solveQ <- function(alpha, theta) {
+  -log(theta) / alpha
 }
 
 # Use qVec as quantities, then calculate a column vector
@@ -47,7 +54,12 @@ shinyServer(function(input, output) {
                    measure=c("utility", "net_utility_with_agent1", "net_utility_with_agent2"))
     colnames(dfLong) <-c("quantity", "type", "utility")
     p <- ggplot(dfLong, aes(x=quantity, y=utility, colour=type)) + geom_path()
-    # p + geom_point(aes(x=5.6, y=3.9), colour="green") + geom_point(aes(x=5.6, y=3.9), colour="blue")
+    q1 <- solveQ(input$alpha, input$theta1)
+    u1 <- expUtility(input$alpha, q1) - q1 * input$theta1
+    p <- p + geom_label(label="max", aes(x=q1, y=u1), colour="green")
+    q2 <- solveQ(input$alpha, input$theta2)
+    u2 <- expUtility(input$alpha, q2) - q2 * input$theta2
+    p <- p + geom_label(label="max", aes(x=q2, y=u2), colour="blue")
     p
   })
 })
