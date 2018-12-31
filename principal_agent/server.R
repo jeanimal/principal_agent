@@ -40,7 +40,8 @@ shinyServer(function(input, output) {
     q <- seq(1, 30, by=1)
     dfWide <- calcMultipleUtility(q, input$alpha, c(input$theta1, input$theta2))
     dfLong <- melt(dfWide, id=c("quantity"), measure=c("utility", "utility1", "utility2"))
-    ggplot(dfLong, aes(x=quantity, y=value, colour=variable)) + geom_path()
+    colnames(dfLong) <-c("quantity", "type", "utility")
+    ggplot(dfLong, aes(x=quantity, y=utility, colour=type)) + geom_path()
   })
   
 })
