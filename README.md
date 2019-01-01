@@ -56,7 +56,7 @@ The app was created with RStudio, so just load the .Rproj file for easy developm
 
 # Principal-Agent Models
 
-The models are based on the summaries in Laffont and Maritmort's 2001 _The Theory of Incentives_.
+The models are based on the summaries in Laffont and Maritmort's (2001) _The Theory of Incentives_.
 
 # Authors
 
