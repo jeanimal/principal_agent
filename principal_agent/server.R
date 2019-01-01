@@ -119,8 +119,8 @@ createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
 icreateUtilityPlot <- function(qVec, alpha, theta1, theta2, propEfficient) {
   dfc <- icalcMultipleUtility(qVec, alpha, theta1, theta2, propEfficient)
   dfcLong <- melt(dfc, id=c("q1", "q2"), measure=c("net_utility"))
-  p <- ggplot(dfcLong, aes(x=q1, y=value, colour=q2, group=q2)) + geom_line()
-  q1Last <- qVec[length(qVec)-1]
+  colnames(dfcLong) <-c("q1", "q2", "ignore", "wgt_avg_principal_utility")
+  p <- ggplot(dfcLong, aes(x=q1, y=wgt_avg_principal_utility, colour=q2, group=q2)) + geom_line()
   utilFunc <- function(q1, q2) {icalcUtility(alpha, q1, q2, theta1, theta2,
                     propEfficient)}
   # Below create a "legend" with a label directly on each line.  It's easier
@@ -139,7 +139,7 @@ icreateUtilityPlot <- function(qVec, alpha, theta1, theta2, propEfficient) {
   # But a q2 of 15 does better, with a utility of 5.73.
   q2Max <- isolveQInefficient(alpha, theta1, theta2, propEfficient)
   uMax <- utilFunc(q1Max, q2Max)
-  labelMax <- paste0("max (", format(round(uMax, 2), nsmall = 2), ")")
+  labelMax <- paste0("max (q2=", format(round(q2Max, 2), nsmall = 2), ")")
   p <- p + geom_label(label=labelMax, aes(x=q1Max, y=uMax),
                       colour="red")
   p
