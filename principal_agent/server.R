@@ -104,12 +104,13 @@ createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
   # colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent1")] <- "net_utility_with_efficient_agent"
   # colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent2")] <- "net_utility_with_inefficient_agent"
   dfLong <- melt(dfWide, id=c("quantity"),
-                 measure=c("utility", "net_utility_with_agent1", "net_utility_with_agent2"))
+                 measure=c("net_utility_with_agent1", "net_utility_with_agent2"))
   colnames(dfLong) <-c("quantity", "type", "utility")
   p <- ggplot(dfLong, aes(x=quantity, y=utility, colour=type)) + geom_path()
   q1 <- solveQ(alpha, theta1)
   u1 <- expUtility(alpha, q1) - q1 * theta1
-  p <- p + geom_label(label="max", aes(x=q1, y=u1), colour="green")
+  # TODO(jean): Dynamically find the color ggplot used.
+  p <- p + geom_label(label="max", aes(x=q1, y=u1), colour="red")
   q2 <- solveQ(alpha, theta2)
   u2 <- expUtility(alpha, q2) - q2 * theta2
   p <- p + geom_label(label="max", aes(x=q2, y=u2), colour="blue")
