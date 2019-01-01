@@ -6,13 +6,12 @@
 # source("functions.R")
 #
 # # Complete information
-# createUtilityPlot(seq(0, 30, by=1), 0.1, 0.1, 0.2)
 # createSolutionDataFrame(0.1, 0.1, 0.2)
+# createUtilityPlot(seq(0, 30, by=1), 0.1, 0.1, 0.2)
 #
 # # Incomplete information
-# icreateUtilityPlot(seq(0, 30, by=5), 0.1, 0.1, 0.2, 0.5)
 # icreateSolutionDataFrame(0.1, 0.1, 0.2, 0.5)
-
+# icreateUtilityPlot(seq(0, 30, by=5), 0.1, 0.1, 0.2, 0.5)
 
 library(ggplot2)
 # library(Cairo)   # For nicer ggplot2 output when deployed on Linux
