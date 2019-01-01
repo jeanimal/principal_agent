@@ -75,6 +75,8 @@ calcMultipleUtility <- function(qVec, alpha, thetaVec) {
 
 icalcUtility <- function(alpha, q1, q2, thetaEfficient, thetaInefficient,
              propEfficient) {
+  # TODO(jean): Bug: the transfer to agent 1 (efficient)
+  # is greater than in the calculation below (greater than q1 * theta1).
   propEfficient*(expUtility(alpha, q1) - q1*thetaEfficient) +
     (1-propEfficient)*(expUtility(alpha, q2) - q2*thetaInefficient)
 }
@@ -82,6 +84,8 @@ icalcUtility <- function(alpha, q1, q2, thetaEfficient, thetaInefficient,
 # Example: icalcMultipleUtility(seq(0, 30, by=1), 0.1, 0.1, 0.2, 0.5)
 icalcMultipleUtility <- function(qVec, alpha, thetaEfficient, thetaInefficient,
                                  propEfficient) {
+  # TODO(jean): Bug: the transfer to agent 1 (efficient)
+  # is greater than in the calculation below (greater than q1 * theta1).
   df1 <- calcMultipleUtility(qVec, alpha, c(thetaEfficient))
   names(df1) <- c('q1', 'u1', 'transfer1', 'utility1')
   df2 <- calcMultipleUtility(qVec, alpha, c(thetaInefficient))
