@@ -11,6 +11,11 @@ library(ggplot2)
 library(reshape2)
 library(shiny)
 
+#
+# Function names beginning with "i" are specifically for the incomplete
+# information case.
+#
+
 # The raw utility of q widgets for a principal with an exponential utility
 # and alpha preference.
 expUtility <- function(alpha, q) {
@@ -110,15 +115,27 @@ icreateUtilityPlot <- function(qVec, alpha, theta1, theta2, propEfficient) {
   dfcLong <- melt(dfc, id=c("q1", "q2"), measure=c("net_utility"))
   p <- ggplot(dfcLong, aes(x=q1, y=value, colour=q2, group=q2)) + geom_line()
   q1Last <- qVec[length(qVec)-1]
-  utilFunc <- function(q2) {icalcUtility(alpha, q1Last, q2, theta1, theta2,
+  utilFunc <- function(q1, q2) {icalcUtility(alpha, q1, q2, theta1, theta2,
                     propEfficient)}
-  p <- p + geom_label(label="q2=0", aes(x=q1Last, y=utilFunc(0)))
-  p <- p + geom_label(label="q2=5", aes(x=q1Last, y=utilFunc(5)))
-  p <- p + geom_label(label="q2=10", aes(x=q1Last, y=utilFunc(10)))
-  p <- p + geom_label(label="q2=15", aes(x=q1Last, y=utilFunc(15)))
-  p <- p + geom_label(label="q2=20", aes(x=q1Last, y=utilFunc(20)))
-  p <- p + geom_label(label="q2=25", aes(x=q1Last, y=utilFunc(25)))
-  p <- p + geom_label(label="q2=30", aes(x=q1Last, y=utilFunc(30)))
+  # Below create a "legend" with a label directly on each line.  It's easier
+  # than looking at different shades of blue.
+  # The code below is hard-coded for what I know I passed in for qVec.
+  p <- p + geom_label(label="q2=0", aes(x=qVec[1], y=utilFunc(qVec[1], 0)))
+  p <- p + geom_label(label="q2=5", aes(x=qVec[2], y=utilFunc(qVec[2], 5)))
+  p <- p + geom_label(label="q2=10", aes(x=qVec[3], y=utilFunc(qVec[3],10)))
+  p <- p + geom_label(label="q2=15", aes(x=qVec[4], y=utilFunc(qVec[4], 15)))
+  p <- p + geom_label(label="q2=20", aes(x=qVec[5], y=utilFunc(qVec[5], 20)))
+  p <- p + geom_label(label="q2=25", aes(x=qVec[6], y=utilFunc(qVec[6], 25)))
+  p <- p + geom_label(label="q2=30", aes(x=qVec[7], y=utilFunc(qVec[7], 30)))
+  # Now add the label for spot that maximizes the principal's utility.
+  q1Max <- solveQ(alpha, theta1)
+  # TODO(jean): The function below returns q2 of 12, utility 5.64
+  # But a q2 of 15 does better, with a utility of 5.73.
+  q2Max <- isolveQInefficient(alpha, theta1, theta2, propEfficient)
+  uMax <- utilFunc(q1Max, q2Max)
+  labelMax <- paste0("max (", format(round(uMax, 2), nsmall = 2), ")")
+  p <- p + geom_label(label=labelMax, aes(x=q1Max, y=uMax),
+                      colour="red")
   p
 }
 
@@ -130,7 +147,8 @@ createSolutionDataFrame <- function(alpha, theta1, theta2) {
   t2 <- q2 * theta2
   u2 <- expUtility(alpha, q2) - t2
   data.frame(agent=c("agent1", "agent2"), theta=c(theta1, theta2),
-             quantity=c(q1, q2), payment=c(t1, t2), principalUtility=c(u1, u2))
+             quantity=c(q1, q2), payment=c(t1, t2),
+             principalUtility=c(u1, u2))
 }
 
 icreateSolutionDataFrame <- function(alpha, theta1, theta2, propEfficient) {
@@ -141,8 +159,13 @@ icreateSolutionDataFrame <- function(alpha, theta1, theta2, propEfficient) {
                            propEfficient)
   t2 <- q2 * theta2
   u2 <- expUtility(alpha, q2) - t2
-  data.frame(contract=c("high_effort", "low_effort"),
-             quantity=c(q1, q2), payment=c(t1, t2), principalUtility=c(u1, u2))
+  weightedAvg <- function(v1, v2) {propEfficient*v1 + (1-propEfficient)*v2}
+  data.frame(contract=c("high_effort (q1)", "low_effort (q2)", "WEIGHTED AVG"),
+             quantity=c(q1, q2, weightedAvg(q1, q2)),
+             payment=c(t1, t2, weightedAvg(t1, t2)),
+             agentUtility=c(t1-theta1*q1, t2-theta2*q2,
+                            weightedAvg(t1-theta1*q1, t2-theta2*q2)),
+             principalUtility=c(u1, u2, weightedAvg(u1, u2)))
 }
 
 shinyServer(function(input, output) {

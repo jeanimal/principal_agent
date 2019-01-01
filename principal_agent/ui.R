@@ -55,8 +55,16 @@ shinyUI(
 )),
 tabPanel("Incomplete Info",
          fluidPage(
+           helpText("Lesson: When you do not know ahead of time which agents are ",
+                    "efficient, you discourage pretending to be inefficient ",
+                    "by offering more pay for more work (quantity q)."),
            helpText("The principal does not know each agent's type ",
-                    "but does know the proportion of agents of each type."),
+                    "but does know the proportion of agents of each type.",
+                    "The principal has to offer two contracts and let agents pick. ",
+                    "ideally the efficient agent will choose the high-effort ",
+                    "contract and the inefficient agent will choose the  ",
+                    "low-effort contract.  The principal wants to propose ",
+                    "contracts that maximize her utility."),
            sidebarLayout(
              sidebarPanel(
                numericInput("ialpha",
