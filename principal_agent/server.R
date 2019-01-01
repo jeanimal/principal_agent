@@ -110,10 +110,10 @@ createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
   q1 <- solveQ(alpha, theta1)
   u1 <- expUtility(alpha, q1) - q1 * theta1
   # TODO(jean): Dynamically find the color ggplot used.
-  p <- p + geom_label(label="max with agent 1", aes(x=q1, y=u1), colour="red")
+  p <- p + geom_label(label="max with agent 1", x=q1, y=u1, colour="red")
   q2 <- solveQ(alpha, theta2)
   u2 <- expUtility(alpha, q2) - q2 * theta2
-  p <- p + geom_label(label="max with agent 2", aes(x=q2, y=u2), colour="blue")
+  p <- p + geom_label(label="max with agent 2", x=q2, y=u2, colour="blue")
   p + theme(legend.position="none")
 }
 
@@ -139,8 +139,7 @@ icreateUtilityPlot <- function(qVec, alpha, theta1, theta2, propEfficient) {
   q1Max <- solveQ(alpha, theta1)
   uMax <- utilFunc(q1Max, q2Max)
   labelMax <- paste0("max (q2=", format(round(q2Max, 2), nsmall = 2), ")")
-  p <- p + geom_label(label=labelMax, aes(x=q1Max, y=uMax),
-                      colour="red")
+  p <- p + geom_label(label=labelMax, x=q1Max, y=uMax, colour="red")
   p
 }
 
