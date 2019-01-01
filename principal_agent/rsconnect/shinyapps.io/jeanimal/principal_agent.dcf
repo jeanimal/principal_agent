@@ -5,8 +5,8 @@ account: jeanimal
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 624927
-bundleId: 1791420
+bundleId: 1791867
 url: https://jeanimal.shinyapps.io/principal_agent/
-when: 1546317722.63692
+when: 1546362504.1156
 asMultiple: FALSE
 asStatic: FALSE

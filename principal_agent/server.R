@@ -126,16 +126,12 @@ icreateUtilityPlot <- function(qVec, alpha, theta1, theta2, propEfficient) {
   p <- ggplot(dfcLong, aes(x=q1, y=wgt_avg_principal_utility, colour=q2, group=q2)) + geom_line()
   utilFunc <- function(q1, q2) {icalcUtility(alpha, q1, q2, theta1, theta2,
                     propEfficient)}
-  # Below create a "legend" with a label directly on each line.  It's easier
-  # than looking at different shades of blue.
-  # The code below is hard-coded for what I know I passed in for qVec.
-  p <- p + geom_label(label="q2=0", aes(x=qVec[1], y=utilFunc(qVec[1], 0)))
-  p <- p + geom_label(label="q2=5", aes(x=qVec[2], y=utilFunc(qVec[2], 5)))
-  p <- p + geom_label(label="q2=10", aes(x=qVec[3], y=utilFunc(qVec[3],10)))
-  p <- p + geom_label(label="q2=15", aes(x=qVec[4], y=utilFunc(qVec[4], 15)))
-  p <- p + geom_label(label="q2=20", aes(x=qVec[5], y=utilFunc(qVec[5], 20)))
-  p <- p + geom_label(label="q2=25", aes(x=qVec[6], y=utilFunc(qVec[6], 25)))
-  p <- p + geom_label(label="q2=30", aes(x=qVec[7], y=utilFunc(qVec[7], 30)))
+  # Below create a label directly on each line.  It's easier using the legend
+  # ti distinguish different shades of blue.
+  for (qVal in qVec) {
+    q2Label <- paste0("q2=", format(round(qVal, 0), nsmall = 0))
+    p <- p + geom_label(label=q2Label, x=qVal, y=utilFunc(qVal, qVal))
+  }
   # Now add the line and label for inputs that maximize the principal's utility.
   qVecRep <- rep(qVec, 7) # hack to make data same length as original.
   q2Max <- isolveQInefficient(alpha, theta1, theta2, propEfficient)
