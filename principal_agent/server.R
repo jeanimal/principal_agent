@@ -117,6 +117,8 @@ createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
   p + theme(legend.position="none")
 }
 
+# Example: icreateUtilityPlot(seq(0, 30, by=5), 0.1, 0.1, 0.2, 0.5)
+# This can be slow to render.  Don't give it too much data.
 icreateUtilityPlot <- function(qVec, alpha, theta1, theta2, propEfficient) {
   dfc <- icalcMultipleUtility(qVec, alpha, theta1, theta2, propEfficient)
   dfcLong <- melt(dfc, id=c("q1", "q2"), measure=c("net_utility"))
@@ -134,9 +136,11 @@ icreateUtilityPlot <- function(qVec, alpha, theta1, theta2, propEfficient) {
   p <- p + geom_label(label="q2=20", aes(x=qVec[5], y=utilFunc(qVec[5], 20)))
   p <- p + geom_label(label="q2=25", aes(x=qVec[6], y=utilFunc(qVec[6], 25)))
   p <- p + geom_label(label="q2=30", aes(x=qVec[7], y=utilFunc(qVec[7], 30)))
-  # Now add the label for spot that maximizes the principal's utility.
-  q1Max <- solveQ(alpha, theta1)
+  # Now add the line and label for inputs that maximize the principal's utility.
+  qVecRep <- rep(qVec, 7) # hack to make data same length as original.
   q2Max <- isolveQInefficient(alpha, theta1, theta2, propEfficient)
+  p <- p + geom_line(aes(x=qVecRep, y=utilFunc(qVecRep, q2Max)), colour="red")
+  q1Max <- solveQ(alpha, theta1)
   uMax <- utilFunc(q1Max, q2Max)
   labelMax <- paste0("max (q2=", format(round(q2Max, 2), nsmall = 2), ")")
   p <- p + geom_label(label=labelMax, aes(x=q1Max, y=uMax),
