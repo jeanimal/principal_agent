@@ -56,6 +56,9 @@ shinyUI(
     
     mainPanel(
        plotOutput("utilityPlot"),
+       helpText("The optimal contracts are shown below: the principal ",
+                "pays that amount for that quantity of widgets to each agent ",
+                "to maximize her utility."),
        tableOutput('solutionTable')
     )
   )
