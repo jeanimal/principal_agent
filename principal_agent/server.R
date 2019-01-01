@@ -73,18 +73,19 @@ calcMultipleUtility <- function(qVec, alpha, thetaVec) {
   df
 }
 
+# The principal's utility.
+# See the reduced program P' on p. 42 of Laffont and Martimort 2002.
 icalcUtility <- function(alpha, q1, q2, thetaEfficient, thetaInefficient,
              propEfficient) {
-  # TODO(jean): Bug: the transfer to agent 1 (efficient)
-  # is greater than in the calculation below (greater than q1 * theta1).
   propEfficient*(expUtility(alpha, q1) - q1*thetaEfficient) +
-    (1-propEfficient)*(expUtility(alpha, q2) - q2*thetaInefficient)
+    (1-propEfficient)*(expUtility(alpha, q2) - q2*thetaInefficient) -
+    propEfficient * (thetaInefficient - thetaEfficient) * q2
 }
 
 # Example: icalcMultipleUtility(seq(0, 30, by=1), 0.1, 0.1, 0.2, 0.5)
 icalcMultipleUtility <- function(qVec, alpha, thetaEfficient, thetaInefficient,
                                  propEfficient) {
-  # TODO(jean): Bug: the transfer to agent 1 (efficient)
+  # TODO(jean): The transfer to agent 1 (efficient)
   # is greater than in the calculation below (greater than q1 * theta1).
   df1 <- calcMultipleUtility(qVec, alpha, c(thetaEfficient))
   names(df1) <- c('q1', 'u1', 'transfer1', 'utility1')
@@ -92,7 +93,8 @@ icalcMultipleUtility <- function(qVec, alpha, thetaEfficient, thetaInefficient,
   names(df2) <- c('q2', 'u2','transfer2', 'utility2')
   dfc <- merge(df1, df2)
   dfc['net_utility'] <- propEfficient*(dfc['utility1']) + 
-    (1-propEfficient)*dfc['utility2']
+    (1-propEfficient)*dfc['utility2'] -
+    propEfficient * (thetaInefficient - thetaEfficient) * dfc['q2']
   dfc
 }
 
