@@ -49,7 +49,8 @@ shinyUI(
                     max = 1.0,
                     step = 0.1,
                     value = 0.2),
-       helpText("This plots the principal's net utility:"),
+       helpText("This plots the principal's net utility, the pleasure ",
+                "from the widgets minus the payment to the agent: "),
        withMathJax(),
        helpText("$$\\frac{1-e^{{-\\alpha}{q}}}{\\alpha} - {\\theta}{q}$$")
     ),
