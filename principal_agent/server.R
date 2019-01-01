@@ -136,8 +136,6 @@ icreateUtilityPlot <- function(qVec, alpha, theta1, theta2, propEfficient) {
   p <- p + geom_label(label="q2=30", aes(x=qVec[7], y=utilFunc(qVec[7], 30)))
   # Now add the label for spot that maximizes the principal's utility.
   q1Max <- solveQ(alpha, theta1)
-  # TODO(jean): The function below returns q2 of 12, utility 5.64
-  # But a q2 of 15 does better, with a utility of 5.73.
   q2Max <- isolveQInefficient(alpha, theta1, theta2, propEfficient)
   uMax <- utilFunc(q1Max, q2Max)
   labelMax <- paste0("max (q2=", format(round(q2Max, 2), nsmall = 2), ")")
