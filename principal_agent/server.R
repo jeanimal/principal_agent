@@ -29,6 +29,32 @@ solveQ <- function(alpha, theta) {
   -log(theta) / alpha
 }
 
+isolveAdjustment <- function(thetaEfficient, thetaInefficient, propEfficient) {
+  thetaDiff = thetaInefficient - thetaEfficient
+  propEfficient/(1-propEfficient) * thetaDiff
+}
+
+# Solves for q of the inefficient agent under incomplete information, where
+# two possible thetas are known and the proportion of efficient agents.
+# propEfficient must be in [0, 1).
+# thetaInefficient > thetaEfficient
+# TEST: isolveQInefficient(0.1, 0.1, 0.2, 0.5) == 12.04 (roughly)
+# # where q-SB = -ln( v/(1-v) (theta- -theta_) + theta- ) / alpha
+# (sing eq. 2.29 and substituting that S' = exp(alpha * q-SB) and solving for q-SB)
+isolveQInefficient <- function(alpha, thetaEfficient, thetaInefficient,
+                               propEfficient) {
+  adj <- isolveAdjustment(thetaEfficient, thetaInefficient, propEfficient)
+  -log(adj + thetaInefficient) / alpha
+}
+
+isolveTEfficient <- function(alpha, thetaEfficient, thetaInefficient,
+                             propEfficient) {
+  qInefficient <- isolveQInefficient(alpha, thetaEfficient, thetaInefficient,
+                                     propEfficient)
+  thetaDiff = thetaInefficient - thetaEfficient
+  thetaEfficient * solveQ(alpha, thetaEfficient) + thetaDiff * qInefficient
+}
+
 # Use qVec as quantities, then calculate a column vector
 # of raw utility. Then for each theta in the thetaList, generate a transfer
 # and net utility column.
@@ -40,6 +66,25 @@ calcMultipleUtility <- function(qVec, alpha, thetaVec) {
     df[paste0('net_utility_with_agent', i)] <- df['utility'] - df[paste0('transfer', i)]
   }
   df
+}
+
+icalcUtility <- function(alpha, q1, q2, thetaEfficient, thetaInefficient,
+             propEfficient) {
+  propEfficient*(expUtility(alpha, q1) - q1*thetaEfficient) +
+    (1-propEfficient)*(expUtility(alpha, q2) - q2*thetaInefficient)
+}
+
+# Example: icalcMultipleUtility(seq(0, 30, by=1), 0.1, 0.1, 0.2, 0.5)
+icalcMultipleUtility <- function(qVec, alpha, thetaEfficient, thetaInefficient,
+                                 propEfficient) {
+  df1 <- calcMultipleUtility(qVec, alpha, c(thetaEfficient))
+  names(df1) <- c('q1', 'u1', 'transfer1', 'utility1')
+  df2 <- calcMultipleUtility(qVec, alpha, c(thetaInefficient))
+  names(df2) <- c('q2', 'u2','transfer2', 'utility2')
+  dfc <- merge(df1, df2)
+  dfc['net_utility'] <- propEfficient*(dfc['utility1']) + 
+    (1-propEfficient)*dfc['utility2']
+  dfc
 }
 
 # Example: createUtilityPlot(seq(0, 30, by=1), 0.1, 0.1, 0.2)
@@ -60,14 +105,44 @@ createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
   p
 }
 
+icreateUtilityPlot <- function(qVec, alpha, theta1, theta2, propEfficient) {
+  dfc <- icalcMultipleUtility(qVec, alpha, theta1, theta2, propEfficient)
+  dfcLong <- melt(dfc, id=c("q1", "q2"), measure=c("net_utility"))
+  p <- ggplot(dfcLong, aes(x=q1, y=value, colour=q2, group=q2)) + geom_line()
+  q1Last <- qVec[length(qVec)-1]
+  utilFunc <- function(q2) {icalcUtility(alpha, q1Last, q2, theta1, theta2,
+                    propEfficient)}
+  p <- p + geom_label(label="q2=0", aes(x=q1Last, y=utilFunc(0)))
+  p <- p + geom_label(label="q2=5", aes(x=q1Last, y=utilFunc(5)))
+  p <- p + geom_label(label="q2=10", aes(x=q1Last, y=utilFunc(10)))
+  p <- p + geom_label(label="q2=15", aes(x=q1Last, y=utilFunc(15)))
+  p <- p + geom_label(label="q2=20", aes(x=q1Last, y=utilFunc(20)))
+  p <- p + geom_label(label="q2=25", aes(x=q1Last, y=utilFunc(25)))
+  p <- p + geom_label(label="q2=30", aes(x=q1Last, y=utilFunc(30)))
+  p
+}
+
 createSolutionDataFrame <- function(alpha, theta1, theta2) {
   q1 <- solveQ(alpha, theta1)
-  u1 <- expUtility(alpha, q1) - q1 * theta1
+  t1 <- q1 * theta1
+  u1 <- expUtility(alpha, q1) - t1
   q2 <- solveQ(alpha, theta2)
-  u2 <- expUtility(alpha, q2) - q2 * theta2
+  t2 <- q2 * theta2
+  u2 <- expUtility(alpha, q2) - t2
   data.frame(agent=c("agent1", "agent2"), theta=c(theta1, theta2),
-             quantity=c(q1, q2),
-             payment=c(q1*theta1, q2*theta2), principalUtility=c(u1, u2))
+             quantity=c(q1, q2), payment=c(t1, t2), principalUtility=c(u1, u2))
+}
+
+icreateSolutionDataFrame <- function(alpha, theta1, theta2, propEfficient) {
+  q1 <- solveQ(alpha, theta1)
+  t1 <- isolveTEfficient(alpha, theta1, theta2, propEfficient)
+  u1 <- expUtility(alpha, q1) - t1
+  q2 <- isolveQInefficient(alpha, theta1, theta2,
+                           propEfficient)
+  t2 <- q2 * theta2
+  u2 <- expUtility(alpha, q2) - t2
+  data.frame(contract=c("high_effort", "low_effort"),
+             quantity=c(q1, q2), payment=c(t1, t2), principalUtility=c(u1, u2))
 }
 
 shinyServer(function(input, output) {
@@ -77,5 +152,14 @@ shinyServer(function(input, output) {
   })
   output$solutionTable <- renderTable({
     createSolutionDataFrame(input$alpha, input$theta1, input$theta2)
+  })
+  output$iutilityPlot <- renderPlot({
+    q <- seq(0, 30, by=5)
+    icreateUtilityPlot(q, input$ialpha, input$itheta1, input$itheta2,
+                       input$iproportion)
+  })
+  output$isolutionTable <- renderTable({
+    icreateSolutionDataFrame(input$ialpha, input$itheta1, input$itheta2,
+                             input$iproportion)
   })
 })

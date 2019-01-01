@@ -57,7 +57,38 @@ tabPanel("Incomplete Info",
          fluidPage(
            helpText("The principal does not know each agent's type ",
                     "but does know the proportion of agents of each type."),
-           helpText("Coming soon...")
+           sidebarLayout(
+             sidebarPanel(
+               numericInput("ialpha",
+                            "Principal's alpha (in utility):",
+                            min = 0,
+                            max = 1.0,
+                            step = 0.1,
+                            value = 0.1),
+               numericInput("itheta1",
+                            "Agent 1 theta (effort per widget):",
+                            min = 0,
+                            max = 1.0,
+                            step = 0.1,
+                            value = 0.1),
+               numericInput("itheta2",
+                            "Agent 2 theta (effort per widget):",
+                            min = 0,
+                            max = 1.0,
+                            step = 0.1,
+                            value = 0.2),
+               numericInput("iproportion",
+                            "Proportion of agents like agent 1:",
+                            min = 0,
+                            max = 1.0,
+                            step = 0.1,
+                            value = 0.5)
+             ),
+             mainPanel(
+               plotOutput("iutilityPlot"),
+               tableOutput('isolutionTable')
+             )
+           )
 )),
 footer = fluidPage(
   hr(),
