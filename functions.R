@@ -1,5 +1,18 @@
 # Functions that create data tables and ggplot2 plots of principal-agent
 # models.
+#
+# Example usage:
+#
+# source("functions.R")
+#
+# # Complete information
+# createUtilityPlot(seq(0, 30, by=5), 0.1, 0.1, 0.2)
+# createSolutionDataFrame(0.1, 0.1, 0.2)
+#
+# # Incomplete information
+# icreateUtilityPlot(seq(0, 30, by=5), 0.1, 0.1, 0.2, 0.5)
+# icreateSolutionDataFrame(0.1, 0.1, 0.2, 0.5)
+
 
 library(ggplot2)
 # library(Cairo)   # For nicer ggplot2 output when deployed on Linux
@@ -137,6 +150,7 @@ icreateUtilityPlot <- function(qVec, alpha, theta1, theta2, propEfficient) {
   p
 }
 
+# Example: createSolutionDataFrame(0.1, 0.1, 0.2)
 createSolutionDataFrame <- function(alpha, theta1, theta2) {
   q1 <- solveQ(alpha, theta1)
   t1 <- q1 * theta1
@@ -149,6 +163,7 @@ createSolutionDataFrame <- function(alpha, theta1, theta2) {
              net_utility=c(u1, u2))
 }
 
+# Example: icreateSolutionDataFrame(0.1, 0.1, 0.2, 0.5)
 icreateSolutionDataFrame <- function(alpha, theta1, theta2, propEfficient) {
   q1 <- solveQ(alpha, theta1)
   t1 <- isolveTEfficient(alpha, theta1, theta2, propEfficient)
