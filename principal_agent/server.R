@@ -105,16 +105,16 @@ createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
   # colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent2")] <- "net_utility_with_inefficient_agent"
   dfLong <- melt(dfWide, id=c("quantity"),
                  measure=c("net_utility_with_agent1", "net_utility_with_agent2"))
-  colnames(dfLong) <-c("quantity", "type", "utility")
-  p <- ggplot(dfLong, aes(x=quantity, y=utility, colour=type)) + geom_path()
+  colnames(dfLong) <-c("quantity", "type", "net_utility")
+  p <- ggplot(dfLong, aes(x=quantity, y=net_utility, colour=type)) + geom_path()
   q1 <- solveQ(alpha, theta1)
   u1 <- expUtility(alpha, q1) - q1 * theta1
   # TODO(jean): Dynamically find the color ggplot used.
-  p <- p + geom_label(label="max", aes(x=q1, y=u1), colour="red")
+  p <- p + geom_label(label="max with agent 1", aes(x=q1, y=u1), colour="red")
   q2 <- solveQ(alpha, theta2)
   u2 <- expUtility(alpha, q2) - q2 * theta2
-  p <- p + geom_label(label="max", aes(x=q2, y=u2), colour="blue")
-  p
+  p <- p + geom_label(label="max with agent 2", aes(x=q2, y=u2), colour="blue")
+  p + theme(legend.position="none")
 }
 
 icreateUtilityPlot <- function(qVec, alpha, theta1, theta2, propEfficient) {
@@ -155,7 +155,7 @@ createSolutionDataFrame <- function(alpha, theta1, theta2) {
   u2 <- expUtility(alpha, q2) - t2
   data.frame(agent=c("agent1", "agent2"), theta=c(theta1, theta2),
              quantity=c(q1, q2), payment=c(t1, t2),
-             principalUtility=c(u1, u2))
+             net_utility=c(u1, u2))
 }
 
 icreateSolutionDataFrame <- function(alpha, theta1, theta2, propEfficient) {
