@@ -9,10 +9,10 @@ https://jeanimal.shinyapps.io/principal_agent/
 
 # Using Locally
 
+## Data and plots for complete information model
+
 ```r
 source("functions.R")
-
-# Complete information
 
 alpha <- 0.1; theta1 <- 0.1; theta2 <- 0.2
 createSolutionDataFrame(alpha, theta1, theta2)
@@ -25,6 +25,30 @@ createUtilityPlot(qVec, alpha, theta1, theta2)
 ```
 
 ![CreateUtilityPlot example output](https://github.com/jeanimal/principal_agent/blob/master/img/createUtilityPlotExampleOutput.jpeg)
+
+## Data and plots for incomplete information model
+
+Use the same functions but prefixed with an "i" and add the proportionEfficient.
+
+The output plot should be a 3D plot that is a function of q1 and q2, so I put
+q1 on the x-axis and represented different values of q2 with different lines.
+
+```r
+source("functions.R")
+
+alpha <- 0.1; theta1 <- 0.1; theta2 <- 0.2; proportionEfficient <- 0.5
+icreateSolutionDataFrame(alpha, theta1, theta2, proportionEfficient)
+#>           contract quantity  payment agentUtility principalUtility
+#> 1 high_effort (q1) 23.02585 3.506558    1.2039728         5.493442
+#> 2  low_effort (q2) 12.03973 2.407946    0.0000000         4.592054
+#> 3     WEIGHTED AVG 17.53279 2.957252    0.6019864         5.042748
+
+# Use fewer q's for speed and legibility.
+qVec <- seq(0, 30, by=5)
+icreateUtilityPlot(qVec, alpha, theta1, theta2, proportionEfficient)
+```
+
+![CreateUtilityPlot example output](https://github.com/jeanimal/principal_agent/blob/master/img/icreateUtilityPlotExampleOutput.jpeg)
 
 # Dev Tools
 
