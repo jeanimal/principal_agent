@@ -192,4 +192,8 @@ shinyServer(function(input, output) {
     icreateSolutionDataFrame(input$ialpha, input$itheta1, input$itheta2,
                              input$iproportion)
   })
+  output$solutionTableSyncToI <- renderTable({
+    # Use the non-i data frame with i inputs.
+    createSolutionDataFrame(input$ialpha, input$itheta1, input$itheta2)
+  })
 })

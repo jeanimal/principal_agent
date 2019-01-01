@@ -116,7 +116,12 @@ tabPanel("Incomplete Info",
                         "inefficient agent can't work hard enough and is stuck ",
                         "with the low effort contract.  q1 is the highest point ",
                         "on the highest q2 curve."),
-               tableOutput('isolutionTable')
+               tableOutput('isolutionTable'),
+               helpText("For comparison, below are the full info contracts. ",
+                        "Agent 1 gets paid a lot less for the same work because ",
+                        "he is stuck with the contract-- no need to motivate him ",
+                        "to choose it."),
+               tableOutput('solutionTableSyncToI')
              )
            )
 )),
