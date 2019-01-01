@@ -6,7 +6,7 @@
 # source("functions.R")
 #
 # # Complete information
-# createUtilityPlot(seq(0, 30, by=5), 0.1, 0.1, 0.2)
+# createUtilityPlot(seq(0, 30, by=1), 0.1, 0.1, 0.2)
 # createSolutionDataFrame(0.1, 0.1, 0.2)
 #
 # # Incomplete information
@@ -125,24 +125,31 @@ createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
 }
 
 # Example: icreateUtilityPlot(seq(0, 30, by=5), 0.1, 0.1, 0.2, 0.5)
-# This can be slow to render.  Don't give it too much data.
+# This can be slow to render, soon't give it too many q's.
 icreateUtilityPlot <- function(qVec, alpha, theta1, theta2, propEfficient) {
   dfc <- icalcMultipleUtility(qVec, alpha, theta1, theta2, propEfficient)
   dfcLong <- melt(dfc, id=c("q1", "q2"), measure=c("net_utility"))
   colnames(dfcLong) <-c("q1", "q2", "ignore", "wgt_avg_principal_utility")
+  
+  # Create the base graph with a curve for each level of q2.
   p <- ggplot(dfcLong, aes(x=q1, y=wgt_avg_principal_utility, colour=q2, group=q2)) + geom_line()
   utilFunc <- function(q1, q2) {icalcUtility(alpha, q1, q2, theta1, theta2,
                                              propEfficient)}
-  # Below create a label directly on each line.  It's easier using the legend
-  # ti distinguish different shades of blue.
+  
+  # Add the curve for inputs that maximize the principal's utility.
+  qVecRep <- rep(qVec, 7) # hack to make data same length as original.
+  q2Max <- isolveQInefficient(alpha, theta1, theta2, propEfficient)
+  p <- p + geom_line(aes(x=qVecRep, y=utilFunc(qVecRep, q2Max)), colour="red")
+  
+  # Create a label directly on each base line.  It's easier than using the
+  # legend and trying to distinguish different shades of blue.
   for (qVal in qVec) {
     q2Label <- paste0("q2=", format(round(qVal, 0), nsmall = 0))
     p <- p + geom_label(label=q2Label, x=qVal, y=utilFunc(qVal, qVal))
   }
-  # Now add the line and label for inputs that maximize the principal's utility.
-  qVecRep <- rep(qVec, 7) # hack to make data same length as original.
-  q2Max <- isolveQInefficient(alpha, theta1, theta2, propEfficient)
-  p <- p + geom_line(aes(x=qVecRep, y=utilFunc(qVecRep, q2Max)), colour="red")
+  
+  # Add the label for inputs that maximize the principal's utility.
+  # q2Max was calculated above.
   q1Max <- solveQ(alpha, theta1)
   uMax <- utilFunc(q1Max, q2Max)
   labelMax <- paste0("max (q2=", format(round(q2Max, 2), nsmall = 2), ")")
