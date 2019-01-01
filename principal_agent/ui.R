@@ -110,6 +110,12 @@ tabPanel("Incomplete Info",
              ),
              mainPanel(
                plotOutput("iutilityPlot"),
+               helpText("The optimal contracts are shown below.  Agents can ",
+                        "choose, and the efficient agent will prefer the high ",
+                        "effort contract because it pays more per widget.  The ",
+                        "inefficient agent can't work hard enough and is stuck ",
+                        "with the low effort contract.  q1 is the highest point ",
+                        "on the highest q2 curve."),
                tableOutput('isolutionTable')
              )
            )
