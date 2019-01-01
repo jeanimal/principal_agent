@@ -67,8 +67,8 @@ calcMultipleUtility <- function(qVec, alpha, thetaVec) {
   df <- data.frame(qVec, sapply(qVec, function(x) expUtility(alpha, x)))
   names(df) <- c('quantity','utility')
   for (i in seq(length(thetaVec))) {
-    df[paste0('transfer', i)] <- thetaVec[i] * df['quantity']
-    df[paste0('net_utility_with_agent', i)] <- df['utility'] - df[paste0('transfer', i)]
+    df[paste0('net_utility_with_agent', i)] <- df['utility'] - 
+      thetaVec[i] * df['quantity']
   }
   df
 }
@@ -88,9 +88,9 @@ icalcMultipleUtility <- function(qVec, alpha, thetaEfficient, thetaInefficient,
   # TODO(jean): The transfer to agent 1 (efficient)
   # is greater than in the calculation below (greater than q1 * theta1).
   df1 <- calcMultipleUtility(qVec, alpha, c(thetaEfficient))
-  names(df1) <- c('q1', 'u1', 'transfer1', 'utility1')
+  names(df1) <- c('q1', 'raw_u1', 'utility1')
   df2 <- calcMultipleUtility(qVec, alpha, c(thetaInefficient))
-  names(df2) <- c('q2', 'u2','transfer2', 'utility2')
+  names(df2) <- c('q2', 'raw_u2', 'utility2')
   dfc <- merge(df1, df2)
   dfc['net_utility'] <- propEfficient*(dfc['utility1']) + 
     (1-propEfficient)*dfc['utility2'] -
