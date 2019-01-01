@@ -24,7 +24,7 @@ qVec <- seq(0, 30, by=1)
 createUtilityPlot(qVec, alpha, theta1, theta2)
 ```
 
-![CreateUtilityPlot example output](jeanimal.github.com/principal_agent/img/CreateUtilityPlotExampleOutput.jpg)
+![CreateUtilityPlot example output](github.com/jeanimal/principal_agent/img/CreateUtilityPlotExampleOutput.jpg)
 
 # Dev Tools
 
