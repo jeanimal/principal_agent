@@ -7,6 +7,7 @@
 #
 
 library(shiny)
+source("functions.R")
 
 shinyServer(function(input, output) {
   output$utilityPlot <- renderPlot({
