@@ -3,7 +3,7 @@
 #
 # Example usage:
 #
-# source("functions.R")
+# source("principal_agent/functions.R")
 #
 # # Complete information
 # createSolutionDataFrame(0.1, 0.1, 0.2)
