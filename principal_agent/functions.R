@@ -111,8 +111,8 @@ createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
   # colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent2")] <- "net_utility_with_inefficient_agent"
   dfLong <- melt(dfWide, id=c("quantity"),
                  measure=c("net_utility_with_agent1", "net_utility_with_agent2"))
-  colnames(dfLong) <-c("quantity", "type", "net_utility")
-  p <- ggplot(dfLong, aes(x=quantity, y=net_utility, colour=type)) + geom_path()
+  colnames(dfLong) <-c("quantity", "type", "principal_utility")
+  p <- ggplot(dfLong, aes(x=quantity, y=principal_utility, colour=type)) + geom_path()
   q1 <- solveQ(alpha, theta1)
   u1 <- expUtility(alpha, q1) - q1 * theta1
   # TODO(jean): Dynamically find the color ggplot used.
@@ -164,9 +164,12 @@ createSolutionDataFrame <- function(alpha, theta1, theta2) {
   q2 <- solveQ(alpha, theta2)
   t2 <- q2 * theta2
   u2 <- expUtility(alpha, q2) - t2
+  # Agent new utility is payment - effort, but in this case both agents
+  # are paid exactly their effort amount, so zero utility.
   data.frame(agent=c("agent1", "agent2"), theta=c(theta1, theta2),
              quantity=c(q1, q2), payment=c(t1, t2),
-             net_utility=c(u1, u2))
+             agentUtility=c(0, 0), principalUtility=c(u1, u2),
+             totalUtility=c(u1, u2))
 }
 
 # Example: icreateSolutionDataFrame(0.1, 0.1, 0.2, 0.5)
@@ -178,11 +181,15 @@ icreateSolutionDataFrame <- function(alpha, theta1, theta2, propEfficient) {
                            propEfficient)
   t2 <- q2 * theta2
   u2 <- expUtility(alpha, q2) - t2
+  # Agent net utility is payment - effort, which is non-zero for agent 1.
+  au1 <- t1 - theta1*q1
+  au2 <- t2 - theta2*q2
   weightedAvg <- function(v1, v2) {propEfficient*v1 + (1-propEfficient)*v2}
   data.frame(contract=c("high_effort (q1)", "low_effort (q2)", "WEIGHTED AVG"),
              quantity=c(q1, q2, weightedAvg(q1, q2)),
              payment=c(t1, t2, weightedAvg(t1, t2)),
-             agentUtility=c(t1-theta1*q1, t2-theta2*q2,
-                            weightedAvg(t1-theta1*q1, t2-theta2*q2)),
-             principalUtility=c(u1, u2, weightedAvg(u1, u2)))
+             agentUtility=c(au1, au2, weightedAvg(au1, au2)),
+             principalUtility=c(u1, u2, weightedAvg(u1, u2)),
+             totalUtility=c(u1 + au1, u2 + au2,
+                            weightedAvg(u1 + au1, u2 + au2)))
 }
