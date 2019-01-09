@@ -1,3 +1,4 @@
 .*
 !/.gitignore
 principal_agent/rsconnect
+.Rproj.user
