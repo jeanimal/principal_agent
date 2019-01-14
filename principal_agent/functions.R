@@ -29,7 +29,8 @@ expUtility <- function(alpha, q) {
 }
 
 # Solves the optimal quantity under full information.
-# Derivative of utility with respect to q: alpha * exp(-alpha * q) / alpha
+# Derivative of utility with respect to q: 
+#  alpha * exp(-alpha * q) / alpha = exp(-alpha * q)
 # Derivative of cost with respect to q: theta
 # Set these equal and solve for q.
 # exp(-alpha * q) = theta
