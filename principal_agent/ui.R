@@ -16,7 +16,7 @@ shinyUI(
   helpText("This app demonstrates principal-agent models, which calculate ",
            "how principals (employers) should compensate agents (employees) ",
            "to maximize the principal's utility.  The models are from chapter ",
-           "2 of Laffont and Mortimort, 2002, The Theory of Incentives.")
+           "2 of Laffont and Martimort, 2002, The Theory of Incentives.")
                       )),
              tabPanel("Full Info",
                       fluidPage(
