@@ -124,6 +124,19 @@ createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
   p + theme(legend.position="none")
 }
 
+# p <- icreateUtilityContourPlot(seq(0, 30, by=5), 0.1, 0.1, 0.2, 0.5)
+# p + geom_contour(aes(colour = stat(level)))
+icreateUtilityContourPlot <- function(qVec, alpha, theta1, theta2, propEfficient) {
+  dfc <- icalcMultipleUtility(qVec, alpha, theta1, theta2, propEfficient)
+  dfcLong <- melt(dfc, id=c("q1", "q2"), measure=c("net_utility"))
+  colnames(dfcLong) <-c("q1", "q2", "ignore", "wgt_avg_principal_utility")
+  
+  # Create the base graph with a curve for each level of q2.
+  p <- ggplot(dfcLong, aes(x=q1, y=q2, z=wgt_avg_principal_utility)) + geom_contour(aes(colour = stat(level)))
+  p <- p + xlab("qEfficient") + ylab("qInefficient")
+  p
+}
+
 # Example: icreateUtilityPlot(seq(0, 30, by=5), 0.1, 0.1, 0.2, 0.5)
 # This can be slow to render, soon't give it too many q's.
 icreateUtilityPlot <- function(qVec, alpha, theta1, theta2, propEfficient) {
