@@ -31,6 +31,8 @@ m1calcMultipleUtility <- function(tVec, sHigh, sLow, p) {
 # at the bare minimum of zero (participation constraint).
 # psi = agent disutility of work.
 # Example: m1calcMultipleConstrainedUtility(seq(0, 3, 0.2), 6, 3, 0.6, 0.1, 3)
+# When p = 0.5, the solution will involve tLow == tHigh.  The plane is balanced.
+# When p > 0.5, the solution will have tLow = 0.  The plane is tilted.
 m1calcMultipleConstrainedUtility <- function(tLow, sHigh, sLow, p, agentAlpha, psi) {
   d <- data.frame(tLow, sapply(tLow, function(x) {agentUtilityConstraint(agentAlpha, p, x, psi)}))
   names(d) <- c('tLow', 'tHigh')
