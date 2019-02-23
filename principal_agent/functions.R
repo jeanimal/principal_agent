@@ -125,8 +125,11 @@ createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
   p + theme(legend.position="none")
 }
 
-# Example: createUtilityCostPlot(seq(0, 30, by=1), 0.1, 0.1, 0.2)
-createUtilityCostPlot <- function(qVec, alpha, theta1, theta2) {
+# Example: createUtilityCostPlot(seq(0, 30, by=1), 0.1, 0.2)
+# Outputs plot of sales (no cost), cost with wage theta, and profit = sales + cost
+# (where cost is a negative number).  The max is labelled on the profit plot.
+createUtilityCostPlot <- function(qVec, alpha, theta2) {
+  theta1 <- 0
   dfWide <- calcMultipleUtility(qVec, alpha, c(theta1, theta2))
   colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent1")] <- "sales"
   colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent2")] <- "profit"
@@ -134,7 +137,6 @@ createUtilityCostPlot <- function(qVec, alpha, theta1, theta2) {
   colnames(dfLong) <-c("quantity", "type", "money")
   # Order of factor levels determines legend order.  I want sales, profit, cost.
   dfLong["type"] = factor(dfLong[["type"]], levels=c("sales","profit", "cost"))
-  str(dfLong)
   # Add two rows-- first and last point-- to define cost line.  Assumes qVec ordered.
   dfLine <- data.frame(quantity=c(qVec[1], qVec[length(qVec)]), type=c("cost", "cost"))
   dfLine["money"] <- -theta2 * dfLine["quantity"]
@@ -145,10 +147,6 @@ createUtilityCostPlot <- function(qVec, alpha, theta1, theta2) {
   q2 <- solveQ(alpha, theta2)
   u2 <- expUtility(alpha, q2) - q2 * theta2
   p <- p + geom_label(label="max", x=q2, y=u2, colour="purple")
-  # Add cost line
-  # colour=cost is exploiting a bug in colour=type for legend label.
-  #p + geom_line(aes(quantity, cost, colour="cost"), data=dfLine)
-  # p + theme(legend.position="none")
   p
 }
 
