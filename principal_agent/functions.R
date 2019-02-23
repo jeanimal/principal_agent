@@ -132,13 +132,13 @@ createUtilityCostPlot <- function(qVec, alpha, theta2) {
   theta1 <- 0
   dfWide <- calcMultipleUtility(qVec, alpha, c(theta1, theta2))
   colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent1")] <- "sales"
-  colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent2")] <- "profit"
-  dfLong <- melt(dfWide, id=c("quantity"), measure=c("sales", "profit"))
+  colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent2")] <- "profits"
+  dfLong <- melt(dfWide, id=c("quantity"), measure=c("sales", "profits"))
   colnames(dfLong) <-c("quantity", "type", "money")
-  # Order of factor levels determines legend order.  I want sales, profit, cost.
-  dfLong["type"] = factor(dfLong[["type"]], levels=c("sales","profit", "cost"))
+  # Order of factor levels determines legend order.  I want sales, profits, costs.
+  dfLong["type"] = factor(dfLong[["type"]], levels=c("sales","profits", "costs"))
   # Add two rows-- first and last point-- to define cost line.  Assumes qVec ordered.
-  dfLine <- data.frame(quantity=c(qVec[1], qVec[length(qVec)]), type=c("cost", "cost"))
+  dfLine <- data.frame(quantity=c(qVec[1], qVec[length(qVec)]), type=c("costs", "costs"))
   dfLine["money"] <- -theta2 * dfLine["quantity"]
   dfLong <- rbind(dfLong, dfLine)
   p <- ggplot(dfLong, aes(x=quantity, y=money, colour=type)) + geom_path() + scale_color_manual(values=c("red", "purple", "blue"))
