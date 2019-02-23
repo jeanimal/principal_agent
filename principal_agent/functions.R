@@ -143,8 +143,6 @@ createUtilityCostPlot <- function(qVec, alpha, theta2) {
   dfLong <- rbind(dfLong, dfLine)
   p <- ggplot(dfLong, aes(x=quantity, y=money, colour=type)) + geom_path()
   p <- p + scale_color_manual(values=c("blue", "purple", "red"))
-  q1 <- solveQ(alpha, theta1)
-  u1 <- expUtility(alpha, q1) - q1 * theta1
   q2 <- solveQ(alpha, theta2)
   u2 <- expUtility(alpha, q2) - q2 * theta2
   p <- p + geom_label(label="max", x=q2, y=u2, colour="purple")
