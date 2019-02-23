@@ -141,7 +141,8 @@ createUtilityCostPlot <- function(qVec, alpha, theta2) {
   dfLine <- data.frame(quantity=c(qVec[1], qVec[length(qVec)]), type=c("costs", "costs"))
   dfLine["money"] <- -theta2 * dfLine["quantity"]
   dfLong <- rbind(dfLong, dfLine)
-  p <- ggplot(dfLong, aes(x=quantity, y=money, colour=type)) + geom_path() + scale_color_manual(values=c("red", "purple", "blue"))
+  p <- ggplot(dfLong, aes(x=quantity, y=money, colour=type)) + geom_path()
+  p <- p + scale_color_manual(values=c("blue", "purple", "red"))
   q1 <- solveQ(alpha, theta1)
   u1 <- expUtility(alpha, q1) - q1 * theta1
   q2 <- solveQ(alpha, theta2)
