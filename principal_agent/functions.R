@@ -1,5 +1,6 @@
 # Functions that create data tables and ggplot2 plots of principal-agent
-# models.
+# models.  These are adverse selection models in Laffont and Mortimort,
+# 2012, The Theory of Incentives.
 #
 # Example usage:
 #
@@ -122,6 +123,33 @@ createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
   u2 <- expUtility(alpha, q2) - q2 * theta2
   p <- p + geom_label(label="max with agent 2", x=q2, y=u2, colour="blue")
   p + theme(legend.position="none")
+}
+
+# Example: createUtilityCostPlot(seq(0, 30, by=1), 0.1, 0.1, 0.2)
+createUtilityCostPlot <- function(qVec, alpha, theta1, theta2) {
+  dfWide <- calcMultipleUtility(qVec, alpha, c(theta1, theta2))
+  colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent1")] <- "sales"
+  colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent2")] <- "profit"
+  dfLong <- melt(dfWide, id=c("quantity"), measure=c("sales", "profit"))
+  colnames(dfLong) <-c("quantity", "type", "money")
+  # Order of factor levels determines legend order.  I want sales, profit, cost.
+  dfLong["type"] = factor(dfLong[["type"]], levels=c("sales","profit", "cost"))
+  str(dfLong)
+  # Add two rows-- first and last point-- to define cost line.  Assumes qVec ordered.
+  dfLine <- data.frame(quantity=c(qVec[1], qVec[length(qVec)]), type=c("cost", "cost"))
+  dfLine["money"] <- -theta2 * dfLine["quantity"]
+  dfLong <- rbind(dfLong, dfLine)
+  p <- ggplot(dfLong, aes(x=quantity, y=money, colour=type)) + geom_path() + scale_color_manual(values=c("red", "purple", "blue"))
+  q1 <- solveQ(alpha, theta1)
+  u1 <- expUtility(alpha, q1) - q1 * theta1
+  q2 <- solveQ(alpha, theta2)
+  u2 <- expUtility(alpha, q2) - q2 * theta2
+  p <- p + geom_label(label="max", x=q2, y=u2, colour="purple")
+  # Add cost line
+  # colour=cost is exploiting a bug in colour=type for legend label.
+  #p + geom_line(aes(quantity, cost, colour="cost"), data=dfLine)
+  # p + theme(legend.position="none")
+  p
 }
 
 # p <- icreateUtilityContourPlot(seq(0, 30, by=5), 0.1, 0.1, 0.2, 0.5)
