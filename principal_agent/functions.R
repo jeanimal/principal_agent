@@ -138,9 +138,14 @@ createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
 }
 
 # Example: createUtilityCostPlot(seq(0, 30, by=1), 0.1, 0.2)
+# Let's pretend utility is money.
 # Outputs plot of sales (no cost), cost with wage theta, and profit = sales + cost
 # (where cost is a negative number).  The max is labelled on the profit plot.
-createUtilityCostPlot <- function(qVec, alpha, theta2, includeBreakeven=FALSE) {
+# Extended example:
+# createUtilityCostPlot(seq(0, 30, by=1), 0.1, 0.5, currencyScale=10, includeBreakeven=TRUE)
+# You must have the gsl library to use includeBreakeven=TRUE.
+createUtilityCostPlot <- function(qVec, alpha, theta2, currencyScale=1,
+                                  includeBreakeven=FALSE) {
   theta1 <- 0
   dfWide <- calcMultipleUtility(qVec, alpha, c(theta1, theta2))
   colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent1")] <- "sales"
@@ -153,10 +158,11 @@ createUtilityCostPlot <- function(qVec, alpha, theta2, includeBreakeven=FALSE) {
   dfLine <- data.frame(quantity=c(qVec[1], qVec[length(qVec)]), type=c("costs", "costs"))
   dfLine["money"] <- -theta2 * dfLine["quantity"]
   dfLong <- rbind(dfLong, dfLine)
-  p <- ggplot(dfLong, aes(x=quantity, y=money, colour=type)) + geom_path()
+  p <- ggplot(dfLong, aes(x=quantity, y=currencyScale*money, colour=type)) + geom_path()
+  p <- p + ylab("money")
   p <- p + scale_color_manual(values=c("blue", "purple", "red"))
   q2 <- solveQ(alpha, theta2)
-  u2 <- expUtility(alpha, q2) - q2 * theta2
+  u2 <- currencyScale*(expUtility(alpha, q2) - q2 * theta2)
   p <- p + geom_label(label="max", x=q2, y=u2, colour="purple")
   if (includeBreakeven) {
     qBreakEven <- solveBreakeven(alpha, theta2)
