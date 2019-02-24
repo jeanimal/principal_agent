@@ -42,6 +42,18 @@ solveQ <- function(alpha, theta) {
   -log(theta) / alpha
 }
 
+# Solves the quantity that achieve zero utility.
+# Set (1-exp(-alpha*q))/alpha - theta*q = 0 and solve for q.
+# But the solution involves Lambert's W.
+# How to solve (using x in place of q):
+# https://www.wolframalpha.com/input/?i=solve+for+x+(1-exp(-alpha*x))%2Falpha-theta*x%3D0
+solveBreakeven <- function(alpha, theta) {
+  # I don't want to make everyone install gsl just for this one function.?
+  require('gsl')
+  innerValue <- -exp(-1/theta)/theta
+  (theta * lambert_W0(innerValue) + 1) / (alpha * theta)
+}
+
 isolveAdjustment <- function(thetaEfficient, thetaInefficient, propEfficient) {
   thetaDiff = thetaInefficient - thetaEfficient
   propEfficient/(1-propEfficient) * thetaDiff
@@ -128,7 +140,7 @@ createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
 # Example: createUtilityCostPlot(seq(0, 30, by=1), 0.1, 0.2)
 # Outputs plot of sales (no cost), cost with wage theta, and profit = sales + cost
 # (where cost is a negative number).  The max is labelled on the profit plot.
-createUtilityCostPlot <- function(qVec, alpha, theta2) {
+createUtilityCostPlot <- function(qVec, alpha, theta2, includeBreakeven=FALSE) {
   theta1 <- 0
   dfWide <- calcMultipleUtility(qVec, alpha, c(theta1, theta2))
   colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent1")] <- "sales"
@@ -146,6 +158,10 @@ createUtilityCostPlot <- function(qVec, alpha, theta2) {
   q2 <- solveQ(alpha, theta2)
   u2 <- expUtility(alpha, q2) - q2 * theta2
   p <- p + geom_label(label="max", x=q2, y=u2, colour="purple")
+  if (includeBreakeven) {
+    qBreakEven <- solveBreakeven(alpha, theta2)
+    p <- p + geom_label(label="zero", x=qBreakEven, y=0, colour="purple")
+  }
   p
 }
 
