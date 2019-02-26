@@ -137,13 +137,22 @@ createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
   p + theme(legend.position="none")
 }
 
+#
+# Pretending the utility function = sales for the next few functions.
+#
+
+# Price = sales / quantity.  Not the same as slope.
+pricePerQ <- function(alpha, q) {
+  expUtility(alpha, q)/q
+}
+
 # Example: createSalesCostProfitPlot(seq(0, 30, by=1), 0.1, 0.2)
-# Pretending the utility function = sales....
+# Pretending the utility function = sales,
 # Outputs plot of sales (no cost), cost with wage theta, and profit = sales + cost
 # (where cost is a negative number).  The max is labelled on the profit plot.
 # Extended example:
 # createSalesCostProfitPlot(seq(0, 30, by=1), 0.1, 0.5, currencyScale=10, includeBreakeven=TRUE)
-# You must have the gsl library to use includeBreakeven=TRUE.
+# You must have the gsl library installed to use includeBreakeven=TRUE.
 createSalesCostProfitPlot <- function(qVec, alpha, theta2, currencyScale=1,
                                   includeBreakeven=FALSE) {
   theta1 <- 0
@@ -171,11 +180,37 @@ createSalesCostProfitPlot <- function(qVec, alpha, theta2, currencyScale=1,
   p
 }
 
+# Example: createTwoAgentProfitPlot(seq(0, 30, by=1), 0.1, 0.1, 0.2)
 # Pretending the utility function = sales....
-# Price = sales / quantity.  Not the same as slope.
-pricePerQ <- function(alpha, q) {
-  expUtility(alpha, q)/q
+# Outputs plots of principal profit using agent1 with wage theta1 and agent2 with
+# wage theta2.  The max is labelled for each.
+# Extended example:
+# createTwoAgentProfitPlot(seq(0, 30, by=1), 0.1, 0.1, 0.2, currencyScale=10)
+createTwoAgentProfitPlot <- function(qVec, alpha, theta1, theta2, currencyScale=1) {
+  dfWide <- calcMultipleUtility(qVec, alpha, c(theta1, theta2))
+  colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent1")] <- "profit1"
+  colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent2")] <- "profit2"
+  dfLong <- melt(dfWide, id=c("quantity"), measure=c("profit1", "profit2"))
+  colnames(dfLong) <-c("quantity", "type", "profit")
+  
+  p <- ggplot(dfLong, aes(x=quantity, y=currencyScale*profit, colour=type)) + geom_path()
+  p <- p + ylab("profit")
+  p <- p + scale_color_manual(values=c("blue", "red"))
+  
+  # Below assumes theta1 < theta2, so agent 1 is more efficient.
+  q1 <- solveQ(alpha, theta1)
+  u1 <- currencyScale*(expUtility(alpha, q1) - q1 * theta1)
+  p <- p + geom_label(label="efficient agent", x=q1, y=u1, colour="blue")
+  q2 <- solveQ(alpha, theta2)
+  u2 <- currencyScale*(expUtility(alpha, q2) - q2 * theta2)
+  p <- p + geom_label(label="inefficient agent", x=q2, y=u2, colour="red")
+  p + theme(legend.position="none")
 }
+
+#
+# Back to utility.
+# Functions are preceded by "i" to indicate incomplete information.
+#
 
 # p <- icreateUtilityContourPlot(seq(0, 30, by=5), 0.1, 0.1, 0.2, 0.5)
 # p + geom_contour(aes(colour = stat(level)))
