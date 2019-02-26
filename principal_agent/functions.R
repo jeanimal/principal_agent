@@ -137,14 +137,14 @@ createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
   p + theme(legend.position="none")
 }
 
-# Example: createUtilityCostPlot(seq(0, 30, by=1), 0.1, 0.2)
-# Let's pretend utility is money.
+# Example: createSalesCostProfitPlot(seq(0, 30, by=1), 0.1, 0.2)
+# Pretending the utility function = sales....
 # Outputs plot of sales (no cost), cost with wage theta, and profit = sales + cost
 # (where cost is a negative number).  The max is labelled on the profit plot.
 # Extended example:
-# createUtilityCostPlot(seq(0, 30, by=1), 0.1, 0.5, currencyScale=10, includeBreakeven=TRUE)
+# createSalesCostProfitPlot(seq(0, 30, by=1), 0.1, 0.5, currencyScale=10, includeBreakeven=TRUE)
 # You must have the gsl library to use includeBreakeven=TRUE.
-createUtilityCostPlot <- function(qVec, alpha, theta2, currencyScale=1,
+createSalesCostProfitPlot <- function(qVec, alpha, theta2, currencyScale=1,
                                   includeBreakeven=FALSE) {
   theta1 <- 0
   dfWide <- calcMultipleUtility(qVec, alpha, c(theta1, theta2))
@@ -169,6 +169,12 @@ createUtilityCostPlot <- function(qVec, alpha, theta2, currencyScale=1,
     p <- p + geom_label(label="zero", x=qBreakEven, y=0, colour="purple")
   }
   p
+}
+
+# Pretending the utility function = sales....
+# Price = sales / quantity.  Not the same as slope.
+pricePerQ <- function(alpha, q) {
+  expUtility(alpha, q)/q
 }
 
 # p <- icreateUtilityContourPlot(seq(0, 30, by=5), 0.1, 0.1, 0.2, 0.5)
