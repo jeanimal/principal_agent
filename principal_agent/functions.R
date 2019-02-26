@@ -83,12 +83,11 @@ isolveTEfficient <- function(alpha, thetaEfficient, thetaInefficient,
 # Use qVec as quantities, then calculate a column vector
 # of raw utility. Then for each theta in the thetaList, generate a transfer
 # and net utility column.
-calcMultipleUtility <- function(qVec, alpha, thetaVec) {
+calcMultipleUtility <- function(qVec, alpha, thetaVec, prefix='net_utility_with_agent') {
   df <- data.frame(qVec, sapply(qVec, function(x) expUtility(alpha, x)))
   names(df) <- c('quantity','utility')
   for (i in seq(length(thetaVec))) {
-    df[paste0('net_utility_with_agent', i)] <- df['utility'] - 
-      thetaVec[i] * df['quantity']
+    df[paste0(prefix, i)] <- df['utility'] - thetaVec[i] * df['quantity']
   }
   df
 }
