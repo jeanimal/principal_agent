@@ -185,10 +185,10 @@ createSalesCostProfitPlot <- function(qVec, alpha, theta2, currencyScale=1,
 # Extended example:
 # createTwoAgentProfitPlot(seq(0, 30, by=1), 0.1, 0.1, 0.2, currencyScale=10)
 createTwoAgentProfitPlot <- function(qVec, alpha, theta1, theta2, currencyScale=1) {
-  dfWide <- calcMultipleUtility(qVec, alpha, c(theta1, theta2))
+  dfWide <- calcMultipleUtility(qVec, alpha, c(theta1, theta2),  prefix="p")
   colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent1")] <- "profit1"
   colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent2")] <- "profit2"
-  dfLong <- melt(dfWide, id=c("quantity"), measure=c("profit1", "profit2"))
+  dfLong <- melt(dfWide, id=c("quantity"), measure=c("p1", "p2"))
   colnames(dfLong) <-c("quantity", "type", "profit")
   
   p <- ggplot(dfLong, aes(x=quantity, y=currencyScale*profit, colour=type)) + geom_path()
