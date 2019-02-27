@@ -184,24 +184,31 @@ createSalesCostProfitPlot <- function(qVec, alpha, theta2, currencyScale=1,
 # wage theta2.  The max is labelled for each.
 # Extended example:
 # createTwoAgentProfitPlot(seq(0, 30, by=1), 0.1, 0.1, 0.2, currencyScale=10)
+# createTwoAgentProfitPlot(seq(0, 30, by=1), 0.1, 0.1, 0.2, currencyScale=10) + ylim(-25, 75)
 createTwoAgentProfitPlot <- function(qVec, alpha, theta1, theta2, currencyScale=1) {
-  dfWide <- calcMultipleUtility(qVec, alpha, c(theta1, theta2),  prefix="p")
-  colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent1")] <- "profit1"
-  colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent2")] <- "profit2"
-  dfLong <- melt(dfWide, id=c("quantity"), measure=c("p1", "p2"))
+  theta3 <- 0.5
+  dfWide <- calcMultipleUtility(qVec, alpha, c(theta1, theta2, theta3),  prefix="p")
+  dfLong <- melt(dfWide, id=c("quantity"), measure=c("p1", "p2", "p3"))
   colnames(dfLong) <-c("quantity", "type", "profit")
   
   p <- ggplot(dfLong, aes(x=quantity, y=currencyScale*profit, colour=type)) + geom_path()
   p <- p + ylab("profit")
-  p <- p + scale_color_manual(values=c("blue", "red"))
-  
+  colors <- c("brown", "dark green", "purple")
+  p <- p + scale_color_manual(values=colors)
+
   # Below assumes theta1 < theta2, so agent 1 is more efficient.
   q1 <- solveQ(alpha, theta1)
   u1 <- currencyScale*(expUtility(alpha, q1) - q1 * theta1)
-  p <- p + geom_label(label="efficient agent", x=q1, y=u1, colour="blue")
+  p <- p + geom_label(label="efficient agent", x=q1, y=u1, colour=colors[1])
+
   q2 <- solveQ(alpha, theta2)
   u2 <- currencyScale*(expUtility(alpha, q2) - q2 * theta2)
-  p <- p + geom_label(label="inefficient agent", x=q2, y=u2, colour="red")
+  p <- p + geom_label(label="inefficient agent", x=q2, y=u2, colour=colors[2])
+
+  q3 <- solveQ(alpha, theta3)
+  u3 <- currencyScale*(expUtility(alpha, q3) - q3 * theta3)
+  p <- p + geom_label(label="principal", x=q3, y=u3, colour=colors[3])
+
   p + theme(legend.position="none")
 }
 
