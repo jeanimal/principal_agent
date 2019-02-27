@@ -121,8 +121,6 @@ icalcMultipleUtility <- function(qVec, alpha, thetaEfficient, thetaInefficient,
 createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
   # theta0 <- 0
   dfWide <- calcMultipleUtility(qVec, alpha, c(theta1, theta2), prefix="p")
-  # colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent1")] <- "net_utility_with_efficient_agent"
-  # colnames(dfWide)[which(names(dfWide) == "net_utility_with_agent2")] <- "net_utility_with_inefficient_agent"
   dfLong <- melt(dfWide, id=c("quantity"), measure=c("p1", "p2"))
   colnames(dfLong) <-c("quantity", "type", "principal_utility")
   p <- ggplot(dfLong, aes(x=quantity, y=principal_utility, colour=type)) + geom_path()
