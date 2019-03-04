@@ -144,6 +144,13 @@ pricePerQ <- function(alpha, q) {
   expUtility(alpha, q)/q
 }
 
+# Example:
+# profit(0.1, 0.5, 7, currencyScale=10)
+# [1] 15.34147
+profit <- function(alpha, theta, q, currencyScale=1) {
+  (expUtility(alpha, q) - theta * q) * currencyScale
+}
+
 # Example: createSalesCostProfitPlot(seq(0, 30, by=1), 0.1, 0.2)
 # Pretending the utility function = sales,
 # Outputs plot of sales (no cost), cost with wage theta, and profit = sales + cost
