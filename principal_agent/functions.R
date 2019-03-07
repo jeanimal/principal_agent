@@ -180,7 +180,7 @@ createSalesCostProfitPlot <- function(qVec, alpha, theta2, currencyScale=1,
   p <- p + geom_label(label="max", x=q2, y=u2, colour="purple")
   if (includeBreakeven) {
     qBreakEven <- solveBreakeven(alpha, theta2)
-    p <- p + geom_label(label="zero", x=qBreakEven, y=0, colour="purple")
+    p <- p + geom_label(label="breakeven", x=qBreakEven, y=0, colour="purple")
   }
   p
 }
@@ -206,15 +206,15 @@ createTwoAgentProfitPlot <- function(qVec, alpha, theta1, theta2, currencyScale=
   # Below assumes theta1 < theta2, so agent 1 is more efficient.
   q1 <- solveQ(alpha, theta1)
   u1 <- currencyScale*(expUtility(alpha, q1) - q1 * theta1)
-  p <- p + geom_label(label="efficient agent", x=q1, y=u1, colour=colors[1])
+  p <- p + geom_label(label="cost=1", x=q1, y=u1, colour=colors[1])
 
   q2 <- solveQ(alpha, theta2)
   u2 <- currencyScale*(expUtility(alpha, q2) - q2 * theta2)
-  p <- p + geom_label(label="inefficient agent", x=q2, y=u2, colour=colors[2])
+  p <- p + geom_label(label="cost=2", x=q2, y=u2, colour=colors[2])
 
   q3 <- solveQ(alpha, theta3)
   u3 <- currencyScale*(expUtility(alpha, q3) - q3 * theta3)
-  p <- p + geom_label(label="principal", x=q3, y=u3, colour=colors[3])
+  p <- p + geom_label(label="cost=5", x=q3, y=u3, colour=colors[3])
 
   p + theme(legend.position="none")
 }
