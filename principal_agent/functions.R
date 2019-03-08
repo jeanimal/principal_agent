@@ -111,9 +111,17 @@ icalcMultipleUtility <- function(qVec, alpha, thetaEfficient, thetaInefficient,
   df2 <- calcMultipleUtility(qVec, alpha, c(thetaInefficient))
   names(df2) <- c('q2', 'raw_u2', 'utility2')
   dfc <- merge(df1, df2)
+  # Incentive compatibility:
+  # The adjustment is the extra wage to agent1 to prevent him from taking easy contract.
+  # What he earns with industrious > what he earns with easy
+  # transfer1 - theta1 * q1 > transfer2 - theta1 * q2 # not theta 2!
+  # transfer1 - theta1 * q1 > theta2 * q2 - theta1 * q2
+  # transfer1 > (theta2 = theta1) * q2 + theta1 * q1
+  # Before, he got paid theta1 * q1, so the adjustment is (theta2 = theta1) * q2
+  # This enters the princpal's profit as a cost adjustment.
+  dfc['adj'] <- propEfficient * (thetaInefficient - thetaEfficient) * dfc['q2']
   dfc['net_utility'] <- propEfficient*(dfc['utility1']) + 
-    (1-propEfficient)*dfc['utility2'] -
-    propEfficient * (thetaInefficient - thetaEfficient) * dfc['q2']
+    (1-propEfficient)*dfc['utility2'] - dfc['adj']
   dfc
 }
 
