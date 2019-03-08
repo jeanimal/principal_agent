@@ -103,7 +103,7 @@ icalcUtility <- function(alpha, q1, q2, thetaEfficient, thetaInefficient,
 
 # Example: icalcMultipleUtility(seq(0, 30, by=1), 0.1, 0.1, 0.2, 0.5)
 icalcMultipleUtility <- function(qVec, alpha, thetaEfficient, thetaInefficient,
-                                 propEfficient) {
+                                 propEfficient, principalKnowsType=FALSE) {
   # TODO(jean): The transfer to agent 1 (efficient)
   # is greater than in the calculation below (greater than q1 * theta1).
   df1 <- calcMultipleUtility(qVec, alpha, c(thetaEfficient))
@@ -111,22 +111,26 @@ icalcMultipleUtility <- function(qVec, alpha, thetaEfficient, thetaInefficient,
   df2 <- calcMultipleUtility(qVec, alpha, c(thetaInefficient))
   names(df2) <- c('q2', 'raw_u2', 'utility2')
   dfc <- merge(df1, df2)
-  # Incentive compatibility:
-  # The adjustment is the extra wage to agent1 to prevent him from taking easy contract.
-  # What he earns with industrious > what he earns with easy
-  # transfer1 - theta1 * q1 > transfer2 - theta1 * q2 # not theta 2!
-  # transfer1 - theta1 * q1 > theta2 * q2 - theta1 * q2
-  # transfer1 > (theta2 = theta1) * q2 + theta1 * q1
-  # Before, he got paid theta1 * q1, so the adjustment is (theta2 = theta1) * q2
-  # This enters the princpal's profit as a cost adjustment.
-  dfc['adj'] <- propEfficient * (thetaInefficient - thetaEfficient) * dfc['q2']
+  if (principalKnowsType) {
+    dfc['adj'] <- 0
+  } else {
+    # Incentive compatibility:
+    # The adjustment is the extra wage to agent1 to prevent him from taking easy contract.
+    # What he earns with industrious > what he earns with easy
+    # transfer1 - theta1 * q1 > transfer2 - theta1 * q2 # not theta 2!
+    # transfer1 - theta1 * q1 > theta2 * q2 - theta1 * q2
+    # transfer1 > (theta2 = theta1) * q2 + theta1 * q1
+    # Before, he got paid theta1 * q1, so the adjustment is (theta2 = theta1) * q2
+    # This enters the princpal's profit as a cost adjustment.
+    dfc['adj'] <- propEfficient * (thetaInefficient - thetaEfficient) * dfc['q2']
+  }
   dfc['net_utility'] <- propEfficient*(dfc['utility1']) + 
     (1-propEfficient)*dfc['utility2'] - dfc['adj']
   dfc
 }
 
 # Example: createUtilityPlot(seq(0, 30, by=1), 0.1, 0.1, 0.2)
-createUtilityPlot <- function(qVec, alpha, theta1, theta2) {
+createUtilityPlot <- function(qVec, alpha, theta1, theta2, principalKnowsType=FALSE) {
   dfWide <- calcMultipleUtility(qVec, alpha, c(theta1, theta2), prefix="p")
   # colnames(dfWide)[which(names(dfWide) == "p1")] <- "net_utility_with_efficient_agent"
   # colnames(dfWide)[which(names(dfWide) == "p2")] <- "net_utility_with_inefficient_agent"
@@ -234,8 +238,11 @@ createTwoAgentProfitPlot <- function(qVec, alpha, theta1, theta2, currencyScale=
 
 # p <- icreateUtilityContourPlot(seq(0, 30, by=5), 0.1, 0.1, 0.2, 0.5)
 # p + geom_contour(aes(colour = stat(level)))
-icreateUtilityContourPlot <- function(qVec, alpha, theta1, theta2, propEfficient) {
-  dfc <- icalcMultipleUtility(qVec, alpha, theta1, theta2, propEfficient)
+# Or
+# icreateUtilityContourPlot(seq(0, 30, by=2), 0.1, 0.1, 0.2, 0.5, principalKnowsType=TRUE)
+icreateUtilityContourPlot <- function(qVec, alpha, theta1, theta2, propEfficient,
+                                      principalKnowsType=FALSE) {
+  dfc <- icalcMultipleUtility(qVec, alpha, theta1, theta2, propEfficient, principalKnowsType)
   dfcLong <- melt(dfc, id=c("q1", "q2"), measure=c("net_utility"))
   colnames(dfcLong) <-c("q1", "q2", "ignore", "wgt_avg_principal_utility")
   
