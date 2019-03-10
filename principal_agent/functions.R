@@ -253,6 +253,7 @@ icreateUtilityContourPlot <- function(qVec, alpha, theta1, theta2, propEfficient
 }
 
 # Example: icreateUtilityPlot(seq(0, 30, by=5), 0.1, 0.1, 0.2, 0.5)
+# Test: icreateUtilityPlot(seq(0, 30, by=2), 0.1, 0.1, 0.2, 0.5)
 # This can be slow to render, soon't give it too many q's.
 icreateUtilityPlot <- function(qVec, alpha, theta1, theta2, propEfficient) {
   dfc <- icalcMultipleUtility(qVec, alpha, theta1, theta2, propEfficient)
@@ -265,7 +266,7 @@ icreateUtilityPlot <- function(qVec, alpha, theta1, theta2, propEfficient) {
                                              propEfficient)}
   
   # Add the curve for inputs that maximize the principal's utility.
-  qVecRep <- rep(qVec, 7) # hack to make data same length as original.
+  qVecRep <- rep(qVec, length(qVec)) # hack to make data same length as original.
   q2Max <- isolveQInefficient(alpha, theta1, theta2, propEfficient)
   p <- p + geom_line(aes(x=qVecRep, y=utilFunc(qVecRep, q2Max)), colour="red")
   
