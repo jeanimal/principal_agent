@@ -121,7 +121,7 @@ icalcMultipleUtility <- function(qVec, alpha, thetaEfficient, thetaInefficient,
     # transfer1 - theta1 * q1 > theta2 * q2 - theta1 * q2
     # transfer1 > (theta2 = theta1) * q2 + theta1 * q1
     # Before, he got paid theta1 * q1, so the adjustment is (theta2 = theta1) * q2
-    # This enters the princpal's profit as a cost adjustment.
+    # This enters the principal's profit as a cost adjustment.
     dfc['adj'] <- propEfficient * (thetaInefficient - thetaEfficient) * dfc['q2']
   }
   dfc['net_utility'] <- propEfficient*(dfc['utility1']) + 
