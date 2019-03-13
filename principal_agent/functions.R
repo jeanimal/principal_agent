@@ -216,7 +216,6 @@ createTwoAgentProfitPlot <- function(qVec, alpha, theta1, theta2, currencyScale=
   colors <- c("brown", "dark green", "purple")
   p <- p + scale_color_manual(values=colors)
 
-  # Below assumes theta1 < theta2, so agent 1 is more efficient.
   q1 <- solveQ(alpha, theta1)
   u1 <- currencyScale*(expUtility(alpha, q1) - q1 * theta1)
   label1 <- paste0("cost=", currencyScale*theta1)
