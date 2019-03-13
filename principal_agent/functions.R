@@ -204,6 +204,7 @@ createSalesCostProfitPlot <- function(qVec, alpha, theta2, currencyScale=1,
 # Extended example:
 # createTwoAgentProfitPlot(seq(0, 30, by=1), 0.1, 0.1, 0.2, currencyScale=10)
 # createTwoAgentProfitPlot(seq(0, 30, by=1), 0.1, 0.1, 0.2, currencyScale=10) + ylim(-25, 75)
+# createTwoAgentProfitPlot(seq(0, 30, by=1), 0.1, 0.5, 0.1, currencyScale=10) + ylim(-25, 75)
 createTwoAgentProfitPlot <- function(qVec, alpha, theta1, theta2, currencyScale=1) {
   theta3 <- 0.5
   dfWide <- calcMultipleUtility(qVec, alpha, c(theta1, theta2, theta3),  prefix="p")
@@ -218,14 +219,17 @@ createTwoAgentProfitPlot <- function(qVec, alpha, theta1, theta2, currencyScale=
   # Below assumes theta1 < theta2, so agent 1 is more efficient.
   q1 <- solveQ(alpha, theta1)
   u1 <- currencyScale*(expUtility(alpha, q1) - q1 * theta1)
-  p <- p + geom_label(label="cost=1", x=q1, y=u1, colour=colors[1])
+  label1 <- paste0("cost=", currencyScale*theta1)
+  p <- p + geom_label(label=label1, x=q1, y=u1, colour=colors[1])
 
   q2 <- solveQ(alpha, theta2)
   u2 <- currencyScale*(expUtility(alpha, q2) - q2 * theta2)
+  label2 <- paste0("cost=", currencyScale*theta2)
   p <- p + geom_label(label="cost=2", x=q2, y=u2, colour=colors[2])
 
   q3 <- solveQ(alpha, theta3)
   u3 <- currencyScale*(expUtility(alpha, q3) - q3 * theta3)
+  label3 <- paste0("cost=", currencyScale*theta3)
   p <- p + geom_label(label="cost=5", x=q3, y=u3, colour=colors[3])
 
   p + theme(legend.position="none")
