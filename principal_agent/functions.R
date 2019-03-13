@@ -225,12 +225,12 @@ createTwoAgentProfitPlot <- function(qVec, alpha, theta1, theta2, currencyScale=
   q2 <- solveQ(alpha, theta2)
   u2 <- currencyScale*(expUtility(alpha, q2) - q2 * theta2)
   label2 <- paste0("cost=", currencyScale*theta2)
-  p <- p + geom_label(label="cost=2", x=q2, y=u2, colour=colors[2])
+  p <- p + geom_label(label=label2, x=q2, y=u2, colour=colors[2])
 
   q3 <- solveQ(alpha, theta3)
   u3 <- currencyScale*(expUtility(alpha, q3) - q3 * theta3)
   label3 <- paste0("cost=", currencyScale*theta3)
-  p <- p + geom_label(label="cost=5", x=q3, y=u3, colour=colors[3])
+  p <- p + geom_label(label=label3, x=q3, y=u3, colour=colors[3])
 
   p + theme(legend.position="none")
 }
