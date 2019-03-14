@@ -72,6 +72,7 @@ isolveQInefficient <- function(alpha, thetaEfficient, thetaInefficient,
   -log(adj + thetaInefficient) / alpha
 }
 
+# T is the variable for the transfer payment in Laffond and Martimort.
 isolveTEfficient <- function(alpha, thetaEfficient, thetaInefficient,
                              propEfficient) {
   qInefficient <- isolveQInefficient(alpha, thetaEfficient, thetaInefficient,
