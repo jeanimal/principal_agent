@@ -116,7 +116,7 @@ icalcMultipleUtility <- function(qVec, alpha, thetaEfficient, thetaInefficient,
     dfc['adj'] <- 0
   } else {
     # Incentive compatibility:
-    # The adjustment is the extra wage to agent1 to prevent him from taking easy contract.
+    # The adjustment is the extra pay to agent1 to prevent him from taking easy contract.
     # What he earns with industrious > what he earns with easy
     # transfer1 - theta1 * q1 > transfer2 - theta1 * q2 # not theta 2!
     # transfer1 - theta1 * q1 > theta2 * q2 - theta1 * q2
