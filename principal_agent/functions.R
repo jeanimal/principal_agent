@@ -88,6 +88,7 @@ calcMultipleUtility <- function(qVec, alpha, thetaVec, prefix='net_utility_with_
   df <- data.frame(qVec, sapply(qVec, function(x) expUtility(alpha, x)))
   names(df) <- c('quantity','utility')
   for (i in seq(length(thetaVec))) {
+    df[paste0("pay", i)] <- thetaVec[i] * df['quantity']
     df[paste0(prefix, i)] <- df['utility'] - thetaVec[i] * df['quantity']
   }
   df
@@ -108,9 +109,9 @@ icalcMultipleUtility <- function(qVec, alpha, thetaEfficient, thetaInefficient,
   # TODO(jean): The transfer to agent 1 (efficient)
   # is greater than in the calculation below (greater than q1 * theta1).
   df1 <- calcMultipleUtility(qVec, alpha, c(thetaEfficient))
-  names(df1) <- c('q1', 'raw_u1', 'utility1')
+  names(df1) <- c('q1', 'pay1', 'raw_u1', 'utility1')
   df2 <- calcMultipleUtility(qVec, alpha, c(thetaInefficient))
-  names(df2) <- c('q2', 'raw_u2', 'utility2')
+  names(df2) <- c('q2', 'pay2', 'raw_u2', 'utility2')
   dfc <- merge(df1, df2)
   if (principalKnowsType) {
     dfc['adj'] <- 0
