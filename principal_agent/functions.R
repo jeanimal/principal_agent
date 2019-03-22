@@ -256,7 +256,7 @@ icreateUtilityContourPlot <- function(qVec, alpha, theta1, theta2, propEfficient
   
   # Create the base graph with a curve for each level of q2.
   p <- ggplot(dfcLong, aes(x=q1, y=q2, z=wgt_avg_principal_utility)) + geom_contour(aes(colour = stat(level)))
-  p <- p + xlab("qEfficient") + ylab("qInefficient")
+  p <- p + xlab("Q_Efficient") + ylab("Q_Inefficient")
   p
 }
 
