@@ -114,6 +114,7 @@ icalcMultipleUtility <- function(qVec, alpha, thetaEfficient, thetaInefficient,
   names(df2) <- c('q2', 'pay2', 'raw_u2', 'utility2')
   dfc <- merge(df1, df2)
   if (principalKnowsType) {
+    dfc['pay1_adj'] <- 0
     dfc['adj'] <- 0
   } else {
     # Incentive compatibility:
@@ -123,8 +124,10 @@ icalcMultipleUtility <- function(qVec, alpha, thetaEfficient, thetaInefficient,
     # transfer1 - theta1 * q1 > theta2 * q2 - theta1 * q2
     # transfer1 > (theta2 = theta1) * q2 + theta1 * q1
     # Before, he got paid theta1 * q1, so the adjustment is (theta2 = theta1) * q2
-    # This enters the principal's profit as a cost adjustment.
-    dfc['adj'] <- propEfficient * (thetaInefficient - thetaEfficient) * dfc['q2']
+    # Below is the adjusted version of pay to the agent.
+    dfc['pay1_adj'] <- (thetaInefficient - thetaEfficient) * dfc['q2']
+    # Below is adjustment to utility / profit of principal.
+    dfc['adj'] <- propEfficient * dfc['pay1_adj']
   }
   dfc['net_utility'] <- propEfficient*(dfc['utility1']) + 
     (1-propEfficient)*dfc['utility2'] - dfc['adj']
