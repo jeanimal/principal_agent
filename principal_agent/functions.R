@@ -331,3 +331,25 @@ icreateSolutionDataFrame <- function(alpha, theta1, theta2, propEfficient) {
              totalUtility=c(u1 + au1, u2 + au2,
                             weightedAvg(u1 + au1, u2 + au2)))
 }
+
+# Generate a data table, print out the max row, generate a contour plot
+# with specific contour colors and levels.
+# Example:
+# alpha=0.1;theta1=0.1;theta2=0.5;propEfficient=0.5;knowsType=TRUE
+# doSummary(seq(0, 30, by=1), alpha, theta1, theta2, propEfficient, knowsType)
+# This is a convenience function that doesn't really belong in this library
+# But I don't yet have another place to put it.
+doSummary <- function(qVec, alpha, theta1, theta2, propEfficient, knowsType) {
+  dfc <- icalcMultipleUtility(qVec, alpha, theta1, theta2, propEfficient, principalKnowsType=knowsType)
+  max_row <- dfc[which.max(dfc$net_utility),]
+  max_row <- cbind(max_row, t1=(max_row$raw_u1-max_row$utility1+max_row$adj),
+                   w1=(max_row$raw_u1-max_row$utility1+max_row$adj)/max_row$q1)
+  print(max_row)
+  p <- icreateUtilityContourPlot(qVec, alpha, theta1, theta2, propEfficient, principalKnowsType=knowsType)
+  p + geom_raster(aes(fill = wgt_avg_principal_utility)) + scale_colour_grey() +
+    geom_contour(colour="red", breaks=c(-1,-2,-3,-4,-5,-6), linetype = "solid") + 
+    geom_contour(colour="dark green", breaks=c(0,1), linetype = "longdash") + 
+    geom_contour(colour="black", breaks=c(2,3,4,5), linetype = "dotted") + 
+    ggtitle(paste0("knowsType=", knowsType)) + theme(legend.position="none") + 
+    geom_label(label="max", x=max_row$q1, y=max_row$q2)
+}
