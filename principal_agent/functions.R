@@ -346,10 +346,10 @@ doSummary <- function(qVec, alpha, theta1, theta2, propEfficient, knowsType) {
                    w1=(max_row$raw_u1-max_row$utility1+max_row$adj)/max_row$q1)
   print(max_row)
   p <- icreateUtilityContourPlot(qVec, alpha, theta1, theta2, propEfficient, principalKnowsType=knowsType)
-  p + geom_raster(aes(fill = wgt_avg_principal_utility)) + scale_colour_grey() +
-    geom_contour(colour="red", breaks=c(-1,-2,-3,-4,-5,-6), linetype = "solid") + 
-    geom_contour(colour="dark green", breaks=c(0,1), linetype = "longdash") + 
-    geom_contour(colour="black", breaks=c(2,3,4,5), linetype = "dotted") + 
-    ggtitle(paste0("knowsType=", knowsType)) + theme(legend.position="none") + 
+  p + geom_raster(aes(fill = wgt_avg_principal_utility)) +
+    geom_contour(colour="red", breaks=c(-1,-2,-3,-4,-5,-6), linetype = "solid") +
+    geom_contour(colour="dark green", breaks=c(0,1), linetype = "longdash") +
+    geom_contour(colour="black", breaks=c(2,3,4,5), linetype = "dotted") +
+    ggtitle(paste0("knowsType=", knowsType)) + theme(legend.position="none") +
     geom_label(label="max", x=max_row$q1, y=max_row$q2)
 }
