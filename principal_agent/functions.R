@@ -332,8 +332,25 @@ icreateSolutionDataFrame <- function(alpha, theta1, theta2, propEfficient) {
                             weightedAvg(u1 + au1, u2 + au2)))
 }
 
-# Generate a data table, print out the max row, generate a contour plot
-# with specific contour colors and levels.
+#################################################
+# Convenience functions
+# These are not shareable library functions.
+# TODO: Move to separate file (or even repo).
+#################################################
+
+# Contours are defined for easy re-use across plots.
+
+countourNegative <-
+  geom_contour(colour="red", breaks=c(-1,-2,-3,-4,-5,-6), linetype = "solid")
+
+contourLow <-
+    geom_contour(colour="dark green", breaks=c(0,1), linetype = "longdash")
+
+contourHigh <-
+    geom_contour(colour="black", breaks=c(2,3,4,5,6,7,8,9), linetype = "dotted")
+
+# Generate a data table, print out the max row (not solving, just selecting max),
+# generate a contour plot with colours and lineType different by level.
 # Example:
 # alpha=0.1;theta1=0.1;theta2=0.5;propEfficient=0.5;knowsType=TRUE
 # doSummary(seq(0, 30, by=1), alpha, theta1, theta2, propEfficient, knowsType)
@@ -347,9 +364,23 @@ doSummary <- function(qVec, alpha, theta1, theta2, propEfficient, knowsType) {
   print(max_row)
   p <- icreateUtilityContourPlot(qVec, alpha, theta1, theta2, propEfficient, principalKnowsType=knowsType)
   p + geom_raster(aes(fill = wgt_avg_principal_utility)) +
-    geom_contour(colour="red", breaks=c(-1,-2,-3,-4,-5,-6), linetype = "solid") +
-    geom_contour(colour="dark green", breaks=c(0,1), linetype = "longdash") +
-    geom_contour(colour="black", breaks=c(2,3,4,5), linetype = "dotted") +
+    countourNegative + contourLow + contourHigh +
     ggtitle(paste0("knowsType=", knowsType)) + theme(legend.position="none") +
     geom_label(label="max", x=max_row$q1, y=max_row$q2)
+}
+
+doSummary2 <- function(qVec, alpha, theta1, theta2, propEfficient, knowsType) {
+  dfc <- icalcMultipleUtility(qVec, alpha, theta1, theta2, propEfficient, principalKnowsType=knowsType)
+  max_row <- dfc[which.max(dfc$net_utility),]
+  max_row <- cbind(max_row, t1=(max_row$raw_u1-max_row$utility1+max_row$adj),
+                   w1=(max_row$raw_u1-max_row$utility1+max_row$adj)/max_row$q1)
+  print(max_row)
+  p <- icreateUtilityContourPlot(qVec, alpha, theta1, theta2, propEfficient, principalKnowsType=knowsType)
+  p + geom_raster(aes(fill = wgt_avg_principal_utility)) +
+    countourNegative + contourLow + contourHigh +
+    theme(legend.position="none") + xlab("Q_bears") +
+    ylab("Customer service") +
+    geom_label(label="max", x=max_row$q1, y=max_row$q2) +
+    geom_label(label="effort1", x=max_row$q1, y=10) +
+    geom_label(label="effort2", x=max_row$q1, y=0)
 }
