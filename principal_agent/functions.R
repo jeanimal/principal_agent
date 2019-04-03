@@ -381,6 +381,6 @@ doSummary2 <- function(qVec, alpha, theta1, theta2, propEfficient, knowsType) {
     theme(legend.position="none") + xlab("Q_bears") +
     ylab("Customer service") +
     geom_label(label="max", x=max_row$q1, y=max_row$q2) +
-    geom_label(label="effort1", x=max_row$q1, y=10) +
-    geom_label(label="effort2", x=max_row$q1, y=0)
+    geom_label(label="service=10", x=max_row$q1, y=10) +
+    geom_label(label="service=0", x=max_row$q1, y=0)
 }
