@@ -20,8 +20,8 @@ shinyUI(
                       )),
              tabPanel("Full Info",
                       fluidPage(
-  helpText("Lesson: The efficient agent (lower theta, less effort ",
-           "per widget, by default agent1) gets a contract to produce ",
+  helpText("Lesson: The efficient agent (lower theta, less effort needed to produce ",
+           "one widget, by default agent1) gets a contract to produce ",
            "more widgets for a lower payment than the inefficient agent ",
            "(by default agent2)."),
   helpText("(This is in a one-shot game where the principal proposes a contract",
