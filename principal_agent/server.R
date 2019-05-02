@@ -19,8 +19,11 @@ shinyServer(function(input, output) {
   })
   output$iutilityPlot <- renderPlot({
     q <- seq(0, 30, by=5)
-    icreateUtilityPlot(q, input$ialpha, input$itheta1, input$itheta2,
-                       input$iproportion)
+    icreateUtilityContourPlotWithMaxLabel(q, input$ialpha, input$itheta1,
+                                          input$itheta2, input$iproportion,
+                                          xLab="q1", yLab="q2")
+    #icreateUtilityPlot(q, input$ialpha, input$itheta1, input$itheta2,
+    #                   input$iproportion)
   })
   output$isolutionTable <- renderTable({
     icreateSolutionDataFrame(input$ialpha, input$itheta1, input$itheta2,

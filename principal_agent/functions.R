@@ -249,15 +249,34 @@ createTwoAgentProfitPlot <- function(qVec, alpha, theta1, theta2, currencyScale=
 # Or
 # icreateUtilityContourPlot(seq(0, 30, by=2), 0.1, 0.1, 0.2, 0.5, principalKnowsType=TRUE)
 icreateUtilityContourPlot <- function(qVec, alpha, theta1, theta2, propEfficient,
-                                      principalKnowsType=FALSE) {
+                                      principalKnowsType=FALSE,
+                                      xLab="Q_Efficient", yLab="Q_Inefficient") {
   dfc <- icalcMultipleUtility(qVec, alpha, theta1, theta2, propEfficient, principalKnowsType)
   dfcLong <- melt(dfc, id=c("q1", "q2"), measure=c("net_utility"))
   colnames(dfcLong) <-c("q1", "q2", "ignore", "wgt_avg_principal_utility")
+  # Horizontal shear
+  # dfcLong['q1'] <- dfcLong['q1']-dfcLong['q2']
+  # Vertical shear
+  # dfcLong['q2'] <- dfcLong['q2']-dfcLong['q1']
   
   # Create the base graph with a curve for each level of q2.
   p <- ggplot(dfcLong, aes(x=q1, y=q2, z=wgt_avg_principal_utility)) + geom_contour(aes(colour = stat(level)))
-  p <- p + xlab("Q_Efficient") + ylab("Q_Inefficient")
+  p <- p + xlab(xLab) + ylab(yLab)
   p
+}
+
+icreateUtilityContourPlotWithMaxLabel <- function(qVec, alpha, theta1, theta2,
+                                                  propEfficient,
+                                                  xLab="Q_Efficient",
+                                                  yLab="Q_Inefficient") {
+  p <- icreateUtilityContourPlot(qVec, alpha, theta1, theta2,
+                                 propEfficient, FALSE, xLab=xLab, yLab=yLab)
+  # TODO: Switch on principalKnowsType so I can pass it in.
+  df <- icreateSolutionDataFrame(alpha, theta1, theta2, propEfficient)
+  # Danger: this breaks if row labels change.
+  q1 <- df[df["contract"] == "high_effort (q1)",]$quantity
+  q2 <- df[df["contract"] == "low_effort (q2)",]$quantity
+  p + geom_label(label="max", x=q1, y=q2)
 }
 
 # Example: icreateUtilityPlot(seq(0, 30, by=5), 0.1, 0.1, 0.2, 0.5)
@@ -378,9 +397,11 @@ doSummary2 <- function(qVec, alpha, theta1, theta2, propEfficient, knowsType) {
   p <- icreateUtilityContourPlot(qVec, alpha, theta1, theta2, propEfficient, principalKnowsType=knowsType)
   p + geom_raster(aes(fill = wgt_avg_principal_utility)) +
     countourNegative + contourLow + contourHigh +
-    theme(legend.position="none") + xlab("Q_bears") +
+    theme(legend.position="none") + xlab("Q") +
     ylab("Customer service") +
-    geom_label(label="max", x=max_row$q1, y=max_row$q2) +
-    geom_label(label="service=10", x=max_row$q1, y=10) +
+    geom_label(label="max", x=max_row$q1-max_row$q2, y=max_row$q2) +
+    geom_label(label="service=10", x=max_row$q1-10, y=10) +
     geom_label(label="service=0", x=max_row$q1, y=0)
 }
+
+horizontalShear <- function(m) { data.frame(c(1, m), c(0, 1)) }
