@@ -65,7 +65,7 @@ isolveAdjustment <- function(thetaEfficient, thetaInefficient, propEfficient) {
 # thetaInefficient > thetaEfficient
 # TEST: isolveQInefficient(0.1, 0.1, 0.2, 0.5) == 12.04 (roughly)
 # # where q-SB = -ln( v/(1-v) (theta- -theta_) + theta- ) / alpha
-# (sing eq. 2.29 and substituting that S' = exp(alpha * q-SB) and solving for q-SB)
+# (using eq. 2.29 and substituting that S' = exp(alpha * q-SB) and solving for q-SB)
 isolveQInefficient <- function(alpha, thetaEfficient, thetaInefficient,
                                propEfficient) {
   adj <- isolveAdjustment(thetaEfficient, thetaInefficient, propEfficient)
